@@ -760,4 +760,4 @@ struct PlaitsWidget : ModuleWidget {
 };
 
 
-Model *modelPlaits = createModel<Plaits, PlaitsWidget>("AtelierPalette");
+Model *modelPalette = createModel<Plaits, PlaitsWidget>("AtelierPalette");
