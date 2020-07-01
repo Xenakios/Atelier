@@ -25,7 +25,7 @@ private:
 	NVGcontext* mCtx = nullptr;
 };
 
-struct Plaits : Module {
+struct Palette : Module {
 	enum ParamIds {
 		MODEL1_PARAM,
 		MODEL2_PARAM,
@@ -101,7 +101,7 @@ struct Plaits : Module {
 
 	int curNumVoices = 0;
 
-	Plaits() {
+	Palette() {
 		config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);
 		configParam(MODEL1_PARAM, 0.0, 1.0, 0.0, "Model selection 1");
 		configParam(MODEL2_PARAM, 0.0, 1.0, 0.0, "Model selection 2");
@@ -460,10 +460,10 @@ struct MyKnob1 : app::SvgKnob {
         app::SvgKnob::draw(args);
         if (this->paramQuantity==nullptr)
 			return;
-		auto modul = dynamic_cast<Plaits*>(this->paramQuantity->module);
+		auto modul = dynamic_cast<Palette*>(this->paramQuantity->module);
 		if (modul)
 		{
-			if (paramQuantity->paramId == Plaits::FREQ_PARAM)
+			if (paramQuantity->paramId == Palette::FREQ_PARAM)
 				this->snap = !modul->freeTune;
 			if (modul->showModulations==false)
 				return;
@@ -528,7 +528,7 @@ struct MyButton1 : app::SvgSwitch {
 
 struct Model_LEDWidget : public TransparentWidget
 {
-	Model_LEDWidget(Plaits* m)
+	Model_LEDWidget(Palette* m)
 	{
 		mPlaits = m;
 	}
@@ -584,7 +584,7 @@ struct Model_LEDWidget : public TransparentWidget
 			}
 		}
 	}
-	Plaits* mPlaits = nullptr;
+	Palette* mPlaits = nullptr;
 	const float positions[8][2]=
 		{
 			{96.5,102.5},
@@ -602,7 +602,7 @@ struct PlaitsWidget : ModuleWidget {
 	void step() override
 	{
 		ModuleWidget::step();
-		auto plaits = dynamic_cast<Plaits*>(module);
+		auto plaits = dynamic_cast<Palette*>(module);
 		if (plaits)
 		{
 			if (plaits->patch->engine!=curSubPanel)
@@ -621,7 +621,7 @@ struct PlaitsWidget : ModuleWidget {
 		}
 		
 	}
-	PlaitsWidget(Plaits *module) {
+	PlaitsWidget(Palette *module) {
 		setModule(module);
 		setPanel(APP->window->loadSvg(asset::plugin(pluginInstance, "res/palette/paletteBG.svg")));
 		subPanels.resize(16);
@@ -636,62 +636,62 @@ struct PlaitsWidget : ModuleWidget {
 		addChild(swgWidget);
 		swgWidget->box = {{0,0},{box.size}};
 		
-		addParam(createParamCentered<MyKnob1>(Vec(71, 235.5), module, Plaits::FREQ_PARAM));
-		addParam(createParamCentered<MyKnob1>(Vec(199,235.5), module, Plaits::SECONDARY_FREQ_PARAM));
-		addParam(createParamCentered<MyKnob1>(Vec(135,198.5), module, Plaits::HARMONICS_PARAM));
-		addParam(createParamCentered<MyKnob1>(Vec(83.5,145.5), module, Plaits::TIMBRE_PARAM));
-		addParam(createParamCentered<MyKnob1>(Vec(186.5,145.5), module, Plaits::MORPH_PARAM));
-		addParam(createParamCentered<MyKnob1>(Vec(135,283.5), module, Plaits::OUTMIX_PARAM));
-		addParam(createParamCentered<MyKnob1>(Vec(135,283.5), module, Plaits::OUTMIX_PARAM));
+		addParam(createParamCentered<MyKnob1>(Vec(71, 235.5), module, Palette::FREQ_PARAM));
+		addParam(createParamCentered<MyKnob1>(Vec(199,235.5), module, Palette::SECONDARY_FREQ_PARAM));
+		addParam(createParamCentered<MyKnob1>(Vec(135,198.5), module, Palette::HARMONICS_PARAM));
+		addParam(createParamCentered<MyKnob1>(Vec(83.5,145.5), module, Palette::TIMBRE_PARAM));
+		addParam(createParamCentered<MyKnob1>(Vec(186.5,145.5), module, Palette::MORPH_PARAM));
+		addParam(createParamCentered<MyKnob1>(Vec(135,283.5), module, Palette::OUTMIX_PARAM));
+		addParam(createParamCentered<MyKnob1>(Vec(135,283.5), module, Palette::OUTMIX_PARAM));
 		
-		addOutput(createOutputCentered<MyPort1>(Vec(135, 351), module, Plaits::AUX2_OUTPUT));
-		addOutput(createOutputCentered<MyPort1>(Vec(71,351), module, Plaits::OUT_OUTPUT));
-		addOutput(createOutputCentered<MyPort1>(Vec(199.5,351), module, Plaits::AUX_OUTPUT));
+		addOutput(createOutputCentered<MyPort1>(Vec(135, 351), module, Palette::AUX2_OUTPUT));
+		addOutput(createOutputCentered<MyPort1>(Vec(71,351), module, Palette::OUT_OUTPUT));
+		addOutput(createOutputCentered<MyPort1>(Vec(199.5,351), module, Palette::AUX_OUTPUT));
 
-		addInput(createInputCentered<MyPort1>(Vec(135, 44), module, Plaits::TRIGGER_INPUT));
-		addInput(createInputCentered<MyPort1>(Vec(88, 44), module, Plaits::NOTE_INPUT));
+		addInput(createInputCentered<MyPort1>(Vec(135, 44), module, Palette::TRIGGER_INPUT));
+		addInput(createInputCentered<MyPort1>(Vec(88, 44), module, Palette::NOTE_INPUT));
 
-		addInput(createInputCentered<MyPort1>(Vec(252,255), module, Plaits::FREQ_INPUT));
-		addInput(createInputCentered<MyPort1>(Vec(183,44), module, Plaits::LEVEL_INPUT));
+		addInput(createInputCentered<MyPort1>(Vec(252,255), module, Palette::FREQ_INPUT));
+		addInput(createInputCentered<MyPort1>(Vec(183,44), module, Palette::LEVEL_INPUT));
 
-		addInput(createInputCentered<MyPort1>(Vec(18,255), module, Plaits::HARMONICS_INPUT));
-		addParam(createParamCentered<MyKnob2>(Vec(18,233), module, Plaits::HARMONICS_CV_PARAM));
-		addInput(createInputCentered<MyPort1>(Vec(252,148), module, Plaits::MORPH_INPUT));
-		addParam(createParamCentered<MyKnob2>(Vec(252,126), module, Plaits::MORPH_CV_PARAM));
-		addInput(createInputCentered<MyPort1>(Vec(18,148), module, Plaits::TIMBRE_INPUT));
-		addParam(createParamCentered<MyKnob2>(Vec(18,126), module, Plaits::TIMBRE_CV_PARAM));
+		addInput(createInputCentered<MyPort1>(Vec(18,255), module, Palette::HARMONICS_INPUT));
+		addParam(createParamCentered<MyKnob2>(Vec(18,233), module, Palette::HARMONICS_CV_PARAM));
+		addInput(createInputCentered<MyPort1>(Vec(252,148), module, Palette::MORPH_INPUT));
+		addParam(createParamCentered<MyKnob2>(Vec(252,126), module, Palette::MORPH_CV_PARAM));
+		addInput(createInputCentered<MyPort1>(Vec(18,148), module, Palette::TIMBRE_INPUT));
+		addParam(createParamCentered<MyKnob2>(Vec(18,126), module, Palette::TIMBRE_CV_PARAM));
 
-		addParam(createParamCentered<MyKnob2>(Vec(252,233), module, Plaits::FREQ_CV_PARAM));
-		addParam(createParamCentered<MyKnob2>(Vec(71,300), module, Plaits::LPG_COLOR_PARAM));
-		addParam(createParamCentered<MyKnob2>(Vec(199.5,300), module, Plaits::LPG_DECAY_PARAM));
+		addParam(createParamCentered<MyKnob2>(Vec(252,233), module, Palette::FREQ_CV_PARAM));
+		addParam(createParamCentered<MyKnob2>(Vec(71,300), module, Palette::LPG_COLOR_PARAM));
+		addParam(createParamCentered<MyKnob2>(Vec(199.5,300), module, Palette::LPG_DECAY_PARAM));
 
-		addParam(createParamCentered<MyKnob2>(Vec(40,44), module, Plaits::UNISONOMODE_PARAM));
-		addParam(createParamCentered<MyKnob2>(Vec(230,44), module, Plaits::UNISONOSPREAD_PARAM));
+		addParam(createParamCentered<MyKnob2>(Vec(40,44), module, Palette::UNISONOMODE_PARAM));
+		addParam(createParamCentered<MyKnob2>(Vec(230,44), module, Palette::UNISONOSPREAD_PARAM));
 		
-		addParam(createParamCentered<MyKnob2>(Vec(18,206), module, Plaits::HARMONICS_LPG_PARAM));
-		addParam(createParamCentered<MyKnob2>(Vec(18,175), module, Plaits::TIMBRE_LPG_PARAM));
-		addParam(createParamCentered<MyKnob2>(Vec(252,175), module, Plaits::MORPH_LPG_PARAM));
+		addParam(createParamCentered<MyKnob2>(Vec(18,206), module, Palette::HARMONICS_LPG_PARAM));
+		addParam(createParamCentered<MyKnob2>(Vec(18,175), module, Palette::TIMBRE_LPG_PARAM));
+		addParam(createParamCentered<MyKnob2>(Vec(252,175), module, Palette::MORPH_LPG_PARAM));
 
-		addParam(createParamCentered<MyKnob2>(Vec(252,333), module, Plaits::DECAY_CV_PARAM));
-		addInput(createInputCentered<MyPort1>(Vec(252,355), module, Plaits::LPG_DECAY_INPUT));
-		addParam(createParamCentered<MyKnob2>(Vec(18,333), module, Plaits::LPG_COLOR_CV_PARAM));
-		addInput(createInputCentered<MyPort1>(Vec(18,355), module, Plaits::LPG_COLOR_INPUT));
+		addParam(createParamCentered<MyKnob2>(Vec(252,333), module, Palette::DECAY_CV_PARAM));
+		addInput(createInputCentered<MyPort1>(Vec(252,355), module, Palette::LPG_DECAY_INPUT));
+		addParam(createParamCentered<MyKnob2>(Vec(18,333), module, Palette::LPG_COLOR_CV_PARAM));
+		addInput(createInputCentered<MyPort1>(Vec(18,355), module, Palette::LPG_COLOR_INPUT));
 
-		addParam(createParamCentered<MyButton1>(Vec(77.5, 98.5), module, Plaits::MODEL1_PARAM));
-		addParam(createParamCentered<MyButton1>(Vec(192.5, 98.5), module, Plaits::MODEL2_PARAM));
+		addParam(createParamCentered<MyButton1>(Vec(77.5, 98.5), module, Palette::MODEL1_PARAM));
+		addParam(createParamCentered<MyButton1>(Vec(192.5, 98.5), module, Palette::MODEL2_PARAM));
 
-		addParam(createParamCentered<MyKnob2>(Vec(18,76), module, Plaits::ENGINE_CV_PARAM));
-		addInput(createInputCentered<MyPort1>(Vec(18,98), module, Plaits::ENGINE_INPUT));
+		addParam(createParamCentered<MyKnob2>(Vec(18,76), module, Palette::ENGINE_CV_PARAM));
+		addInput(createInputCentered<MyPort1>(Vec(18,98), module, Palette::ENGINE_INPUT));
 
-		addParam(createParamCentered<MyKnob2>(Vec(252,283), module, Plaits::OUTMIX_CV_PARAM));
-		addInput(createInputCentered<MyPort1>(Vec(252,305), module, Plaits::OUTMIX_INPUT));
+		addParam(createParamCentered<MyKnob2>(Vec(252,283), module, Palette::OUTMIX_CV_PARAM));
+		addInput(createInputCentered<MyPort1>(Vec(252,305), module, Palette::OUTMIX_INPUT));
 
-		addParam(createParamCentered<MyKnob2>(Vec(18,283), module, Plaits::OUTMIX_LPG_PARAM));
+		addParam(createParamCentered<MyKnob2>(Vec(18,283), module, Palette::OUTMIX_LPG_PARAM));
 
-		addParam(createParamCentered<MyKnob2>(Vec(252,206), module, Plaits::FREQ_LPG_PARAM));
+		addParam(createParamCentered<MyKnob2>(Vec(252,206), module, Palette::FREQ_LPG_PARAM));
 
-		addParam(createParamCentered<MyKnob2>(Vec(252,76), module, Plaits::UNISONOSPREAD_CV_PARAM));
-		addInput(createInputCentered<MyPort1>(Vec(252,98), module, Plaits::SPREAD_INPUT));
+		addParam(createParamCentered<MyKnob2>(Vec(252,76), module, Palette::UNISONOSPREAD_CV_PARAM));
+		addInput(createInputCentered<MyPort1>(Vec(252,98), module, Palette::SPREAD_INPUT));
 
 		Model_LEDWidget* ledwid = new Model_LEDWidget(module);
 		ledwid->box = {{0,0},{box.size}};
@@ -699,31 +699,31 @@ struct PlaitsWidget : ModuleWidget {
 	}
 
 	void appendContextMenu(Menu *menu) override {
-		Plaits *module = dynamic_cast<Plaits*>(this->module);
+		Palette *module = dynamic_cast<Palette*>(this->module);
 
 		struct PlaitsLowCpuItem : MenuItem {
-			Plaits *module;
+			Palette *module;
 			void onAction(const event::Action &e) override {
 				module->lowCpu ^= true;
 			}
 		};
 
 		struct PlaitsShowModulationsItem : MenuItem {
-			Plaits *module;
+			Palette *module;
 			void onAction(const event::Action &e) override {
 				module->showModulations ^= true;
 			}
 		};
 		
 		struct PlaitsFreeTuneItem : MenuItem {
-			Plaits *module;
+			Palette *module;
 			void onAction(const event::Action &e) override {
 				module->freeTune ^= true;
 			}
 		};
 
 		struct PlaitsModelItem : MenuItem {
-			Plaits *module;
+			Palette *module;
 			int model;
 			void onAction(const event::Action &e) override {
 				for (int i=0;i<MAX_PLAITS_VOICES;++i)
@@ -760,4 +760,4 @@ struct PlaitsWidget : ModuleWidget {
 };
 
 
-Model *modelPalette = createModel<Plaits, PlaitsWidget>("AtelierPalette");
+Model *modelPalette = createModel<Palette, PlaitsWidget>("AtelierPalette");
