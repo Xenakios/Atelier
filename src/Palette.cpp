@@ -121,7 +121,7 @@ struct Plaits : Module {
 		configParam(HARMONICS_CV_PARAM, -1.0, 1.0, 0.0, "Harmonics CV");
 		configParam(HARMONICS_LPG_PARAM, -1.0, 1.0, 0.0, "LPG to Harmonics");
 		configParam(UNISONOMODE_PARAM, 1.0, 16.0, 1.0, "Unisono/Spread num voices");
-		configParam(UNISONOSPREAD_PARAM, 0.0, 1.0, 0.0, "Unisono/Spread");
+		configParam(UNISONOSPREAD_PARAM, 0.0, 1.0, 0.05, "Unisono/Spread");
 		configParam(OUTMIX_CV_PARAM, -1.0, 1.0, 0.0, "Output mix CV");
 		configParam(OUTMIX_LPG_PARAM, -1.0, 1.0, 0.0, "Output mix LPG");
 		configParam(DECAY_CV_PARAM, -1.0, 1.0, 0.0, "Decay CV");
