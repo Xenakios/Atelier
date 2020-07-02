@@ -558,19 +558,22 @@ struct Model_LEDWidget : public TransparentWidget
 			nvgEllipse(args.vg,positions[i][0],positions[i][1],3.5f,3.5f);
 			nvgFill(args.vg);
 		}
-		for (int i=0;i<numVoices;++i)
+		if (mPalette->inputs[Palette::ENGINE_INPUT].isConnected())
 		{
-			int modelIndex = mPalette->voice[i].active_engine();
-			//if (modelIndex == baseEngineIndex)
-			//	continue;
-			int bank = modelIndex / 8;
-			nvgBeginPath(args.vg);
-			nvgFillColor(args.vg,modulatedCols[bank]);
-			
-			modelIndex = modelIndex % 8;
-			nvgEllipse(args.vg,positions[modelIndex][0],positions[modelIndex][1],1.5f,1.5f);
-			
-			nvgFill(args.vg);
+			for (int i=0;i<numVoices;++i)
+			{
+				int modelIndex = mPalette->voice[i].active_engine();
+				//if (modelIndex == baseEngineIndex)
+				//	continue;
+				int bank = modelIndex / 8;
+				nvgBeginPath(args.vg);
+				nvgFillColor(args.vg,modulatedCols[bank]);
+				
+				modelIndex = modelIndex % 8;
+				nvgEllipse(args.vg,positions[modelIndex][0],positions[modelIndex][1],1.5f,1.5f);
+				
+				nvgFill(args.vg);
+			}
 		}
 	}
 	void onButton(const event::Button& e) override
