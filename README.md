@@ -27,7 +27,7 @@ Panel design by Pyer.
 
 (1) The detune/spread amount behaves (for 9 voices) as in the graph :
 
-<img src="https://github.com/Xenakios/Atelier/blob/master/spread_func.png" width="800">
+<img src="https://github.com/Xenakios/Atelier/blob/master/spread_func.png" width="500">
 
 For the first half of the parameter's range, the voices are detuned up to 0.5 semitones, then they are spread to +- 12 semitones and at the very end
 of the parameter's range they go alternatingly to -12, 0 and 12 semitones.
