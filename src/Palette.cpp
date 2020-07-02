@@ -467,8 +467,9 @@ struct PaletteKnobLarge : app::SvgKnob {
 				this->snap = !modul->freeTune;
 			if (modul->showModulations==false)
 				return;
-			static const NVGcolor colors[4]=
+			static const NVGcolor colors[5]=
 			{
+				nvgRGBA(0xEA, 0xEC, 0xEF, 0xff),
 				nvgRGBA(0x00, 0xee, 0x00, 0xff),
 				nvgRGBA(0xee, 0x00, 0x00, 0xff),
 				nvgRGBA(0x00, 0x00, 0xee, 0xff),
@@ -485,12 +486,13 @@ struct PaletteKnobLarge : app::SvgKnob {
 					float ypos = args.clipBox.pos.y;
 					float w = args.clipBox.size.x;
 					float h = args.clipBox.size.y;
-					float xcor0 = xpos + (w / 2.0f) + 10.0f * std::cos(angle);
-					float ycor0 = ypos + (w / 2.0f) + 10.0f * std::sin(angle);
-					float xcor1 = xpos + (w / 2.0f) + 15.0f * std::cos(angle);
-					float ycor1 = ypos + (w / 2.0f) + 15.0f * std::sin(angle);
+					float xcor0 = xpos + (w / 2.0f) + 13.0f * std::cos(angle);
+					float ycor0 = ypos + (w / 2.0f) + 13.0f * std::sin(angle);
+					float xcor1 = xpos + (w / 2.0f) + 8.0f * std::cos(angle);
+					float ycor1 = ypos + (w / 2.0f) + 8.0f * std::sin(angle);
 					nvgBeginPath(args.vg);
 					nvgStrokeColor(args.vg,colors[0]);
+					//nvgStrokeWidth(args.vg,5.0f);
 					nvgMoveTo(args.vg,xcor0,ycor0);
 					nvgLineTo(args.vg,xcor1,ycor1);
 					nvgStroke(args.vg);
@@ -539,7 +541,11 @@ struct Model_LEDWidget : public TransparentWidget
 		NVGRestorer nr(args.vg);
 		static const NVGcolor inactive = nvgRGBA(0x00,0x00,0x00,0xff);
 		static const NVGcolor active = nvgRGBA(0x84,0x84,0x84,0xff);
-		static const NVGcolor activeModulated = nvgRGBA(0x50,0x50,0x50,0xff);
+		// 00B591
+		// EA554E
+		static const NVGcolor modulatedCols[2] = {nvgRGBA(0x00,0xB5,0x91,0xff),
+			nvgRGBA(0xEA,0x55,0x4E,0xff)};
+		
 		int baseEngineIndex = mPalette->patch[0].engine;
 		int baseEngineBank = baseEngineIndex / 8;
 		int numVoices = mPalette->curNumVoices;
@@ -554,19 +560,16 @@ struct Model_LEDWidget : public TransparentWidget
 		}
 		for (int i=0;i<numVoices;++i)
 		{
-			nvgBeginPath(args.vg);
-			nvgFillColor(args.vg,activeModulated);
 			int modelIndex = mPalette->voice[i].active_engine();
+			//if (modelIndex == baseEngineIndex)
+			//	continue;
 			int bank = modelIndex / 8;
+			nvgBeginPath(args.vg);
+			nvgFillColor(args.vg,modulatedCols[bank]);
+			
 			modelIndex = modelIndex % 8;
-			if (bank == baseEngineBank) 
-			{
-				nvgEllipse(args.vg,positions[modelIndex][0],positions[modelIndex][1],1.5f,1.5f);
-				
-			} else
-			{
-				nvgRect(args.vg,positions[modelIndex][0]-1.5f,positions[modelIndex][1]-1.5f,3.0f,3.0f);
-			}
+			nvgEllipse(args.vg,positions[modelIndex][0],positions[modelIndex][1],1.5f,1.5f);
+			
 			nvgFill(args.vg);
 		}
 	}
