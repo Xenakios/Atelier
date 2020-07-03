@@ -18,6 +18,7 @@ New modules based on Mutable/Audible Instruments modules or completely new modul
 - Attenuverters for all parameter CV inputs
 - Unisono/Spread mode that generates detuned/spread pitch polyphony of up to 16 voices from a mono volt/oct input (1)
 - Parameter CV and internal envelope modulations are visualized on the large knobs (can be turned off from the right-click module menu if distracting or uses too much CPU/GPU)
+- Engine can be chosen by clicking on the engine LEDs
 - Engine choice CV modulation shown on the engine choice LEDs
 - Octave stepped coarse tuning knob (can be switched to free mode in the right-click module menu)
 
