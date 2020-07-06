@@ -128,6 +128,7 @@ struct Palette : Module {
 		{
 			stmlib::BufferAllocator allocator(shared_buffer[i], sizeof(shared_buffer[i]));
 			voice[i].Init(&allocator);
+			outputSrc[i].setQuality(4);
 		}
 		onReset();
 		
@@ -392,7 +393,7 @@ struct Palette : Module {
 		// Set output
 		float outmix = params[OUTMIX_PARAM].getValue();
 		outmix += rescale(inputs[OUTMIX_INPUT].getVoltage()*params[OUTMIX_CV_PARAM].getValue(),
-			-5.0f,5.0f,-1.0f,1.0f);
+			-5.0f,5.0f,-0.5f,0.5f);
 		outmix += voice[0].getDecayEnvelopeValue()*params[OUTMIX_LPG_PARAM].getValue();
 		outmix = clamp(outmix,0.0f,1.0f);
 		currentOutmix = outmix;
