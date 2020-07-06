@@ -77,11 +77,6 @@ struct Palette : Module {
 		PITCH_SPREAD_OUTPUT,
 		NUM_OUTPUTS
 	};
-	enum LightIds {
-		ENUMS(MODEL_LIGHT, 8 * 2),
-		NUM_LIGHTS
-	};
-
 	plaits::Voice voice[MAX_PALETTE_VOICES];
 	plaits::Patch patch[MAX_PALETTE_VOICES] = {};
 	plaits::Modulations modulations[MAX_PALETTE_VOICES] = {};
@@ -102,7 +97,7 @@ struct Palette : Module {
 	int curNumVoices = 0;
 
 	Palette() {
-		config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);
+		config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS);
 		configParam(MODEL1_PARAM, 0.0, 1.0, 0.0, "Model selection 1");
 		configParam(MODEL2_PARAM, 0.0, 1.0, 0.0, "Model selection 2");
 		configParam(FREQ_PARAM, -4.0, 4.0, 0.0, "Coarse frequency adjustment");
@@ -276,17 +271,8 @@ struct Palette : Module {
 				}
 			}
 
-			// Model lights
 			int activeEngine = voice[0].active_engine();
-			triPhase += 2.f * args.sampleTime * blockSize;
-			if (triPhase >= 1.f)
-				triPhase -= 1.f;
-			float tri = (triPhase < 0.5f) ? triPhase * 2.f : (1.f - triPhase) * 2.f;
-
-			for (int i = 0; i < 8; i++) {
-				lights[MODEL_LIGHT + 2*i + 0].setBrightness((activeEngine == i) ? 1.f : (patch[0].engine == i) ? tri : 0.f);
-				lights[MODEL_LIGHT + 2*i + 1].setBrightness((activeEngine == i + 8) ? 1.f : (patch[0].engine == i + 8) ? tri : 0.f);
-			}
+			
 			float pitch;
 			if (!freeTune)
 				pitch = std::round(params[FREQ_PARAM].getValue());
