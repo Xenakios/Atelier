@@ -82,7 +82,7 @@ struct Palette : Module {
 	plaits::Modulations modulations[MAX_PALETTE_VOICES] = {};
 	char shared_buffer[MAX_PALETTE_VOICES][16384] = {};
 	
-
+	int lpg_mode = 0;
 	dsp::SampleRateConverter<2> outputSrc[MAX_PALETTE_VOICES];
 	dsp::DoubleRingBuffer<dsp::Frame<2>, 256> outputBuffer[MAX_PALETTE_VOICES];
 	bool lowCpu = false;
@@ -158,6 +158,7 @@ struct Palette : Module {
 		json_object_set_new(rootJ, "decay", json_real(patch[0].decay));
 		json_object_set_new(rootJ, "freetune", json_boolean(freeTune));
 		json_object_set_new(rootJ, "showmods", json_boolean(showModulations));
+		json_object_set_new(rootJ, "lpgMode", json_integer(lpg_mode));
 		return rootJ;
 	}
 
@@ -188,6 +189,10 @@ struct Palette : Module {
 		if (decayJ)
 			for (int i=0;i<MAX_PALETTE_VOICES;++i)
 				patch[i].decay = json_number_value(decayJ);
+		
+		json_t *lpgModeJ = json_object_get(rootJ, "lpgMode");
+		if (lpgModeJ)
+			lpg_mode = json_integer_value(lpgModeJ);
 	}
 	float getModulatedParamNormalized(int paramid, int whichvoice=0)
 	{
@@ -286,6 +291,7 @@ struct Palette : Module {
 			
 			for (int i=0;i<numpolychs;++i)
 			{
+				voice[i].lpg_behavior = (plaits::Voice::LPGBehavior)lpg_mode;
 				patch[i].note = 60.f + pitch * 12.f + pitchAdjust;
 				if (unispreadchans>1)
 					patch[i].note+=getUniSpreadAmount(unispreadchans,i,spreadamt);
@@ -693,6 +699,38 @@ struct PaletteWidget : ModuleWidget {
 	void appendContextMenu(Menu *menu) override {
 		Palette *module = dynamic_cast<Palette*>(this->module);
 
+		struct LPGMenuItem : MenuItem
+		{
+			Palette* module = nullptr;
+			int lpg_mode = 0;
+			void onAction(const event::Action &e) override
+			{
+				module->lpg_mode = lpg_mode;
+			}
+		};
+		struct LPGMenuItems : MenuItem
+		{
+			Palette* module = nullptr;
+			Menu *createChildMenu() override 
+			{
+				Menu *submenu = new Menu();
+				std::string menutexts[3] = {"Classic (Low pass and VCA)","Low pass","Bypassed"};
+				for (int i=0;i<3;++i)
+				{
+					auto menuItem = createMenuItem<LPGMenuItem>(menutexts[i], CHECKMARK(module->lpg_mode==i));
+					menuItem->module = module;
+					menuItem->lpg_mode = i;
+					submenu->addChild(menuItem);
+				}
+				
+				
+				return submenu;
+			}
+		};
+
+
+
+
 		struct PlaitsLowCpuItem : MenuItem {
 			Palette *module;
 			void onAction(const event::Action &e) override {
@@ -735,6 +773,10 @@ struct PaletteWidget : ModuleWidget {
 			= createMenuItem<PlaitsShowModulationsItem>("Show modulation amounts on knobs", CHECKMARK(module->showModulations));
 		showModsItem->module = module;
 		menu->addChild(showModsItem);
+
+		LPGMenuItems* lpg_items = createMenuItem<LPGMenuItems>("LPG mode",RIGHT_ARROW);
+		lpg_items->module = module;
+		menu->addChild(lpg_items);
 
 		menu->addChild(new MenuEntry());
 		menu->addChild(createMenuLabel("Models"));

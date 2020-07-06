@@ -229,11 +229,15 @@ void Voice::Render(
       lpg_envelope_.ProcessPing(attack, short_decay, decay_tail, hf);
     }
   }
-
+  float lpg_gain = 1.0f;
+  if (lpg_behavior == LPGB_Classic)
+    lpg_gain = lpg_envelope_.gain();
+  else if (lpg_behavior == LPGB_Bypassed)
+    lpg_bypass = true;
   out_post_processor_.Process(
       pp_s.out_gain,
       lpg_bypass,
-      lpg_envelope_.gain(),
+      lpg_gain,
       lpg_envelope_.frequency(),
       lpg_envelope_.hf_bleed(),
       out_buffer_,
@@ -244,7 +248,7 @@ void Voice::Render(
   aux_post_processor_.Process(
       pp_s.aux_gain,
       lpg_bypass,
-      lpg_envelope_.gain(),
+      lpg_gain,
       lpg_envelope_.frequency(),
       lpg_envelope_.hf_bleed(),
       aux_buffer_,

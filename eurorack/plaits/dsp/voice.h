@@ -170,6 +170,13 @@ class Voice {
       size_t size);
   inline int active_engine() const { return previous_engine_index_; }
   float getDecayEnvelopeValue() const { return decay_envelope_.value(); } 
+  enum LPGBehavior
+  {
+    LPGB_Classic,
+    LPGB_LowPass,
+    LPGB_Bypassed
+  };
+  LPGBehavior lpg_behavior = LPGB_Classic;
  private:
   void ComputeDecayParameters(const Patch& settings);
 
