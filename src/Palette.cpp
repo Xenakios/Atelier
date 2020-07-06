@@ -327,17 +327,17 @@ struct Palette : Module {
 				else 
 					modulations[i].frequency = inputs[FREQ_INPUT].getVoltage(i) * 6.f;
 				if (inputs[HARMONICS_INPUT].getChannels() < 2)
-					modulations[i].harmonics = inputs[HARMONICS_INPUT].getVoltage() / 5.f;
+					modulations[i].harmonics = inputs[HARMONICS_INPUT].getVoltage() / 10.f;
 				else
-					modulations[i].harmonics = inputs[HARMONICS_INPUT].getVoltage(i) / 5.f;
+					modulations[i].harmonics = inputs[HARMONICS_INPUT].getVoltage(i) / 10.f;
 				if (inputs[TIMBRE_INPUT].getChannels() < 2)
-					modulations[i].timbre = inputs[TIMBRE_INPUT].getVoltage() / 8.f;
+					modulations[i].timbre = inputs[TIMBRE_INPUT].getVoltage() / 10.f;
 				else
-					modulations[i].timbre = inputs[TIMBRE_INPUT].getVoltage(i) / 8.f;
+					modulations[i].timbre = inputs[TIMBRE_INPUT].getVoltage(i) / 10.f;
 				if (inputs[MORPH_INPUT].getChannels() < 2)
-					modulations[i].morph = inputs[MORPH_INPUT].getVoltage() / 8.f;
+					modulations[i].morph = inputs[MORPH_INPUT].getVoltage() / 10.f;
 				else
-					modulations[i].morph = inputs[MORPH_INPUT].getVoltage(i) / 8.f;
+					modulations[i].morph = inputs[MORPH_INPUT].getVoltage(i) / 10.f;
 				// Triggers at around 0.7 V
 				if (inputs[TRIGGER_INPUT].getChannels() < 2)
 					modulations[i].trigger = inputs[TRIGGER_INPUT].getVoltage() / 3.f;
