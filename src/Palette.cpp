@@ -671,7 +671,9 @@ struct PaletteWidget : ModuleWidget {
 		addParam(createParamCentered<PaletteKnobSmall>(Vec(71,300), module, Palette::LPG_COLOR_PARAM));
 		addParam(createParamCentered<PaletteKnobSmall>(Vec(199.5,300), module, Palette::LPG_DECAY_PARAM));
 
-		addParam(createParamCentered<PaletteKnobSmall>(Vec(40,44), module, Palette::UNISONOMODE_PARAM));
+		auto uvoicesknob = createParamCentered<PaletteKnobSmall>(Vec(40,44), module, Palette::UNISONOMODE_PARAM);
+		uvoicesknob->snap = true;
+		addParam(uvoicesknob);
 		addParam(createParamCentered<PaletteKnobSmall>(Vec(230,44), module, Palette::UNISONOSPREAD_PARAM));
 		
 		addParam(createParamCentered<PaletteKnobSmall>(Vec(18,206), module, Palette::HARMONICS_LPG_PARAM));
