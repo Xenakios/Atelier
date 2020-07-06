@@ -81,7 +81,7 @@ struct Palette : Module {
 	plaits::Patch patch[MAX_PALETTE_VOICES] = {};
 	plaits::Modulations modulations[MAX_PALETTE_VOICES] = {};
 	char shared_buffer[MAX_PALETTE_VOICES][16384] = {};
-	float triPhase = 0.f;
+	
 
 	dsp::SampleRateConverter<2> outputSrc[MAX_PALETTE_VOICES];
 	dsp::DoubleRingBuffer<dsp::Frame<2>, 256> outputBuffer[MAX_PALETTE_VOICES];
@@ -388,7 +388,7 @@ struct Palette : Module {
 		outputs[OUT_OUTPUT].setChannels(numpolychs);
 		outputs[AUX_OUTPUT].setChannels(numpolychs);
 		outputs[AUX2_OUTPUT].setChannels(numpolychs);
-		outputs[PITCH_SPREAD_OUTPUT].setChannels(numpolychs);
+		
 		// Set output
 		float outmix = params[OUTMIX_PARAM].getValue();
 		outmix += rescale(inputs[OUTMIX_INPUT].getVoltage()*params[OUTMIX_CV_PARAM].getValue(),
@@ -407,9 +407,6 @@ struct Palette : Module {
 				outputs[AUX_OUTPUT].setVoltage(out2,i);
 				float out3 = outmix*out2 + (1.0f-outmix)*out1;
 				outputs[AUX2_OUTPUT].setVoltage(out3,i);
-				float pitchv = getUniSpreadAmount(numpolychs,i,spreadamt);
-				pitchv = rescale(pitchv,-12.0f,12.0f,-5.0f,5.0f);
-				outputs[PITCH_SPREAD_OUTPUT].setVoltage(pitchv,i);
 			}
 		}
 	}
