@@ -141,7 +141,8 @@ struct Palette : Module {
 			patch[i].lpg_colour = 0.5f;
 			patch[i].decay = 0.5f;
 		}
-
+		lpg_mode = 0;
+		freeTune = false;
 	}
 
 	void onRandomize() override {
