@@ -131,7 +131,6 @@ struct Palette : Module {
 			outputSrc[i].setQuality(4);
 		}
 		onReset();
-		
 	}
 
 	void onReset() override {
