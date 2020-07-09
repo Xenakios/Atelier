@@ -145,8 +145,9 @@ struct Palette : Module {
 	}
 
 	void onRandomize() override {
+		int engineindex = random::u32() % 16;
 		for (int i=0;i<MAX_PALETTE_VOICES;++i)
-			patch[i].engine = random::u32() % 16;
+			patch[i].engine = engineindex;
 	}
 
 	json_t *dataToJson() override {
