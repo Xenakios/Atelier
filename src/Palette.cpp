@@ -549,7 +549,7 @@ struct Model_LEDWidget : public TransparentWidget
 			nvgEllipse(args.vg,positions[i][0],positions[i][1],3.5f,3.5f);
 			nvgFill(args.vg);
 		}
-		if (mPalette->inputs[Palette::ENGINE_INPUT].isConnected())
+		//if (mPalette->inputs[Palette::ENGINE_INPUT].isConnected())
 		{
 			for (int i=0;i<numVoices;++i)
 			{
