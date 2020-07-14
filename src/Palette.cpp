@@ -289,7 +289,7 @@ struct Palette : Module {
 			if (lowCpu)
 				pitch += log2f(48000.f * args.sampleTime);
 			// Update patch
-			
+			bool fm_input_connected = inputs[FREQ_INPUT].isConnected();
 			for (int i=0;i<numpolychs;++i)
 			{
 				voice[i].lpg_behavior = (plaits::Voice::LPGBehavior)lpg_mode;
@@ -312,7 +312,9 @@ struct Palette : Module {
 				else decay += inputs[LPG_DECAY_INPUT].getVoltage(i)/10.0f*params[DECAY_CV_PARAM].getValue();
 				patch[i].decay = clamp(decay,0.0f,1.0);
 				
-				patch[i].frequency_cv_amount = params[FREQ_CV_PARAM].getValue();
+				if (fm_input_connected)
+					patch[i].frequency_cv_amount = params[FREQ_CV_PARAM].getValue();
+				else patch[i].frequency_cv_amount = 0.0f;
 				patch[i].timbre_cv_amount = params[TIMBRE_CV_PARAM].getValue();
 				patch[i].morph_cv_amount = params[MORPH_CV_PARAM].getValue();
 				patch[i].harmonics_cv_amount = params[HARMONICS_CV_PARAM].getValue();
