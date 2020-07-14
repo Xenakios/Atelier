@@ -297,22 +297,21 @@ struct Palette : Module {
 				if (unispreadchans>1)
 					patch[i].note+=getUniSpreadAmount(unispreadchans,i,spreadamt);
 				patch[i].harmonics = params[HARMONICS_PARAM].getValue();
-				//if (!lpg) {
-					patch[i].timbre = params[TIMBRE_PARAM].getValue();
-					patch[i].morph = params[MORPH_PARAM].getValue();
-				//}
-				//else {
-					float lpg_colour = params[LPG_COLOR_PARAM].getValue();
-					if (inputs[LPG_COLOR_INPUT].getChannels() < 2)
-						lpg_colour += inputs[LPG_COLOR_INPUT].getVoltage()/10.0f*params[LPG_COLOR_CV_PARAM].getValue();
-					else lpg_colour += inputs[LPG_COLOR_INPUT].getVoltage(i)/10.0f*params[LPG_COLOR_CV_PARAM].getValue();
-					patch[i].lpg_colour = clamp(lpg_colour,0.0f,1.0f);
-					float decay = params[LPG_DECAY_PARAM].getValue();
-					if (inputs[LPG_DECAY_INPUT].getChannels() < 2)
-						decay += inputs[LPG_DECAY_INPUT].getVoltage()/10.0f*params[DECAY_CV_PARAM].getValue();
-					else decay += inputs[LPG_DECAY_INPUT].getVoltage(i)/10.0f*params[DECAY_CV_PARAM].getValue();
-					patch[i].decay = clamp(decay,0.0f,1.0);
-				//}
+				
+				patch[i].timbre = params[TIMBRE_PARAM].getValue();
+				patch[i].morph = params[MORPH_PARAM].getValue();
+				
+				float lpg_colour = params[LPG_COLOR_PARAM].getValue();
+				if (inputs[LPG_COLOR_INPUT].getChannels() < 2)
+					lpg_colour += inputs[LPG_COLOR_INPUT].getVoltage()/10.0f*params[LPG_COLOR_CV_PARAM].getValue();
+				else lpg_colour += inputs[LPG_COLOR_INPUT].getVoltage(i)/10.0f*params[LPG_COLOR_CV_PARAM].getValue();
+				patch[i].lpg_colour = clamp(lpg_colour,0.0f,1.0f);
+				float decay = params[LPG_DECAY_PARAM].getValue();
+				if (inputs[LPG_DECAY_INPUT].getChannels() < 2)
+					decay += inputs[LPG_DECAY_INPUT].getVoltage()/10.0f*params[DECAY_CV_PARAM].getValue();
+				else decay += inputs[LPG_DECAY_INPUT].getVoltage(i)/10.0f*params[DECAY_CV_PARAM].getValue();
+				patch[i].decay = clamp(decay,0.0f,1.0);
+				
 				patch[i].frequency_cv_amount = params[FREQ_CV_PARAM].getValue();
 				patch[i].timbre_cv_amount = params[TIMBRE_CV_PARAM].getValue();
 				patch[i].morph_cv_amount = params[MORPH_CV_PARAM].getValue();
