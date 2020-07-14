@@ -201,7 +201,7 @@ class Voice {
         ? (use_internal_envelope
             ? cv_modulation_amount * external_modulation + lpg_modulation_amount * envelope
             : cv_modulation_amount * external_modulation)
-        : (use_internal_envelope  //Removed unpatched attenuverter finetuning from the next 2 lines for Atelier/Palette
+        : (use_internal_envelope
             ? lpg_modulation_amount * envelope
             : 0);
 
