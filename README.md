@@ -1,6 +1,6 @@
 # Atelier
 
-Plugin for VCV Rack.
+Plugin for VCV Rack, with panel designs by Pyer.
 
 Currently contains the Palette module which is a reworking of the Mutable/Audible Instruments Plaits/Macro Oscillator 2 module.
 
@@ -23,8 +23,6 @@ New modules based on Mutable/Audible Instruments modules or completely new modul
 - Octave stepped coarse tuning knob (can be switched to free mode in the right-click module menu)
 
 Based on Mutable Instruments Plaits and Audible Instruments Macro Oscillator 2 with code from Emilie Gillet (Mutable Instruments), Andrew Belt (VCV), anlexmatos, Xenakios and other contributors. 
-
-Panel design by Pyer.
 
 (1) The detune/spread amount behaves (for 9 voices) as in the graph :
 
