@@ -72,6 +72,11 @@ void Voice::Init(BufferAllocator* allocator) {
   previous_note_ = 0.0f;
 
   trigger_delay_.Init(trigger_delay_line_);
+  for (int i = 0; i < kMaxBlockSize; ++i)
+  {
+      out_buffer_[i] = 0.0f;
+      aux_buffer_[i] = 0.0f;
+  }
 }
 
 void Voice::Render(

@@ -236,15 +236,15 @@ class Oscillator {
   
  private:
   // Oscillator state.
-  float phase_;
-  float next_sample_;
-  float lp_state_;
-  float hp_state_;
-  bool high_;
+  float phase_ = 0.0f;
+  float next_sample_ = 0.0f;
+  float lp_state_ = 0.0f;
+  float hp_state_ = 0.0f;
+  bool high_ = false;
 
   // For interpolation of parameters.
-  float frequency_;
-  float pw_;
+  float frequency_ = 0.0f;
+  float pw_ = 0.0f;
   
   DISALLOW_COPY_AND_ASSIGN(Oscillator);
 };

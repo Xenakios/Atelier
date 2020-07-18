@@ -54,12 +54,12 @@ class NoiseEngine : public Engine {
   stmlib::Svf lp_hp_filter_;
   stmlib::Svf bp_filter_[2];
   
-  float previous_f0_;
-  float previous_f1_;
-  float previous_q_;
-  float previous_mode_;
+  float previous_f0_ = 0.0f;
+  float previous_f1_ = 0.0f;
+  float previous_q_ = 0.0f;
+  float previous_mode_ = 0.0f;
   
-  float* temp_buffer_;
+  float* temp_buffer_ = nullptr;
   
   DISALLOW_COPY_AND_ASSIGN(NoiseEngine);
 };

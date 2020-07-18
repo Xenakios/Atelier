@@ -59,9 +59,9 @@ class VirtualAnalogEngine : public Engine {
   VariableShapeOscillator sync_;
   VariableSawOscillator variable_saw_;
 
-  float auxiliary_amount_;
-  float xmod_amount_;
-  float* temp_buffer_;
+  float auxiliary_amount_ = 0.0f;
+  float xmod_amount_ = 0.0f;
+  float* temp_buffer_ = nullptr;
   
   DISALLOW_COPY_AND_ASSIGN(VirtualAnalogEngine);
 };

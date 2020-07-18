@@ -33,7 +33,7 @@
 #include "stmlib/stmlib.h"
 
 namespace stmlib {
-
+#ifndef TESTVS
 inline int16_t Interpolate824(const int16_t* table, uint32_t phase)
   __attribute__((always_inline));
 
@@ -82,6 +82,7 @@ inline int16_t Crossfade115(
     uint16_t phase,
     uint16_t balance)
   __attribute__((always_inline));
+#endif
 
 inline int16_t Mix(int16_t a, int16_t b, uint16_t balance) {
   return (a * (65535 - balance) + b * balance) >> 16;

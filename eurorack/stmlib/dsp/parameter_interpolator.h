@@ -66,9 +66,9 @@ class ParameterInterpolator {
   }
   
  private:
-  float* state_;
-  float value_;
-  float increment_;
+  float* state_ = nullptr;
+  float value_ = 0.0f;
+  float increment_ = 0.0f;
 };
 
 }  // namespace stmlib

@@ -50,9 +50,9 @@ class WaveshapingEngine : public Engine {
  private:
   Oscillator slope_;
   Oscillator triangle_;
-  float previous_shape_;
-  float previous_wavefolder_gain_;
-  float previous_overtone_gain_;
+  float previous_shape_ = 0.0f;
+  float previous_wavefolder_gain_ = 0.0f;
+  float previous_overtone_gain_ = 0.0f;
   
   DISALLOW_COPY_AND_ASSIGN(WaveshapingEngine);
 };

@@ -67,11 +67,11 @@ class ChordEngine : public Engine {
   WavetableOscillator<256, 15> wavetable_voice_[kChordNumVoices];
   stmlib::HysteresisQuantizer chord_index_quantizer_;
   
-  float morph_lp_;
-  float timbre_lp_;
-  float previous_root_normalization_;
+  float morph_lp_ = 0.0f;
+  float timbre_lp_ = 0.0f;
+  float previous_root_normalization_ = 0.0f;
   
-  float* ratios_;
+  float* ratios_ = nullptr;
   
   DISALLOW_COPY_AND_ASSIGN(ChordEngine);
 };

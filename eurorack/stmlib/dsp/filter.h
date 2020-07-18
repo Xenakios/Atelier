@@ -84,9 +84,9 @@ class DCBlocker {
   }
   
  private:
-  float pole_;
-  float x_;
-  float y_;
+  float pole_ = 0.0f;
+  float x_ = 0.0f;
+  float y_ = 0.0f;
 };
 
 class OnePole {
@@ -165,9 +165,9 @@ class OnePole {
   }
   
  private:
-  float g_;
-  float gi_;
-  float state_;
+  float g_ = 0.0f;
+  float gi_ = 0.0f;
+  float state_ = 0.0f;
   
   DISALLOW_COPY_AND_ASSIGN(OnePole);
 };
@@ -463,12 +463,12 @@ class Svf {
   inline float h() const { return h_; }
   
  private:
-  float g_;
-  float r_;
-  float h_;
+  float g_ = 0.0f;
+  float r_ = 0.0f;
+  float h_ = 0.0f;
 
-  float state_1_;
-  float state_2_;
+  float state_1_ = 0.0f;
+  float state_2_ = 0.0f;
   
   DISALLOW_COPY_AND_ASSIGN(Svf);
 };
@@ -601,10 +601,10 @@ class NaiveSvf {
   }
   
  private:
-  float f_;
-  float damp_;
-  float lp_;
-  float bp_;
+  float f_ = 0.0f;
+  float damp_ = 0.0f;
+  float lp_ = 0.0f;
+  float bp_ = 0.0f;
   
   DISALLOW_COPY_AND_ASSIGN(NaiveSvf);
 };
@@ -664,11 +664,11 @@ class ModifiedSvf {
   }
   
  private:
-  float f_;
-  float fq_;
-  float x_;
-  float lp_;
-  float bp_;
+  float f_ = 0.0f;
+  float fq_ = 0.0f;
+  float x_ = 0.0f;
+  float lp_ = 0.0f;
+  float bp_ = 0.0f;
   
   DISALLOW_COPY_AND_ASSIGN(ModifiedSvf);
 };
@@ -754,11 +754,11 @@ class CrossoverSvf {
   }
   
  private:
-  float f_;
-  float fq_;
-  float x_[2];
-  float lp_[2];
-  float bp_[2];
+  float f_ = 0.0f;
+  float fq_ = 0.0f;
+  float x_[2] = { 0.0f,0.0f };
+  float lp_[2] = { 0.0f,0.0f };
+  float bp_[2] = { 0.0f,0.0f };
   
   DISALLOW_COPY_AND_ASSIGN(CrossoverSvf);
 };

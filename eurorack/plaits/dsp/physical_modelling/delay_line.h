@@ -92,8 +92,8 @@ class DelayLine {
   }
 
  private:
-  size_t write_ptr_;
-  T* line_;
+  size_t write_ptr_ = 0;
+  T* line_ = nullptr;
   
   DISALLOW_COPY_AND_ASSIGN(DelayLine);
 };

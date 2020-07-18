@@ -111,11 +111,11 @@ class SineOscillator {
   }
   
   // Oscillator state.
-  float phase_;
+  float phase_ = 0.0f;
 
   // For interpolation of parameters.
-  float frequency_;
-  float amplitude_;
+  float frequency_ = 0.1f;
+  float amplitude_ = 0.0f;
   
   DISALLOW_COPY_AND_ASSIGN(SineOscillator);
 };
@@ -189,12 +189,12 @@ class FastSineOscillator {
   }
      
   // Oscillator state.
-  float x_;
-  float y_;
+  float x_ = 0.0f;
+  float y_ = 0.0f;
 
   // For interpolation of parameters.
-  float epsilon_;
-  float amplitude_;
+  float epsilon_ = 0.0f;
+  float amplitude_ = 0.0f;
   
   DISALLOW_COPY_AND_ASSIGN(FastSineOscillator);
 };

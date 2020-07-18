@@ -49,18 +49,18 @@ class FMEngine : public Engine {
  private:
   inline float SinePM(uint32_t phase, float fm) const;
   
-  uint32_t carrier_phase_;
-  uint32_t modulator_phase_;
-  uint32_t sub_phase_;
+  uint32_t carrier_phase_  = 0;
+  uint32_t modulator_phase_ = 0;
+  uint32_t sub_phase_ = 0;
   
-  float previous_carrier_frequency_;
-  float previous_modulator_frequency_;
-  float previous_amount_;
-  float previous_feedback_;
-  float previous_sample_;
+  float previous_carrier_frequency_ = 0.0f;
+  float previous_modulator_frequency_ = 0.0f;
+  float previous_amount_ = 0.0f;
+  float previous_feedback_ = 0.0f;
+  float previous_sample_ = 0.0f;
   
-  float sub_fir_;
-  float carrier_fir_;
+  float sub_fir_ = 0.0f;
+  float carrier_fir_ = 0.0f;
   
   DISALLOW_COPY_AND_ASSIGN(FMEngine);
 };

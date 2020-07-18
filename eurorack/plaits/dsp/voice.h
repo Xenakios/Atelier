@@ -228,11 +228,11 @@ class Voice {
 
   stmlib::HysteresisQuantizer engine_quantizer_;
 
-  int previous_engine_index_;
-  float engine_cv_;
+  int previous_engine_index_ = 0;
+  float engine_cv_ = 0.0f;
 
-  float previous_note_;
-  bool trigger_state_;
+  float previous_note_ = 0.0f;
+  bool trigger_state_ = false;
 
   DecayEnvelope decay_envelope_;
   LPGEnvelope lpg_envelope_;

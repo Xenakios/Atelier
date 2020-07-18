@@ -77,9 +77,9 @@ class BitStream {
     return b;
   }
 
-  const uint8_t* p_;
-  int available_;
-  uint16_t bits_;
+  const uint8_t* p_ = nullptr;
+  int available_ = 0;
+  uint16_t bits_ = 0;
 
   DISALLOW_COPY_AND_ASSIGN(BitStream);
 };
@@ -131,13 +131,13 @@ class LPCSpeechSynthWordBank {
   
   const LPCSpeechSynthWordBankData* word_banks_;
   
-  int num_banks_;
-  int loaded_bank_;
-  int num_frames_;
-  int num_words_;
+  int num_banks_ = 0;
+  int loaded_bank_  = 0;
+  int num_frames_ = 0;
+  int num_words_ = 0;
   int word_boundaries_[kLPCSpeechSynthMaxWords];
   
-  LPCSpeechSynth::Frame* frames_;
+  LPCSpeechSynth::Frame* frames_ = nullptr;
   
   static uint8_t energy_lut_[16];
   static uint8_t period_lut_[64];
@@ -175,17 +175,17 @@ class LPCSpeechSynthController {
       size_t size);
   
  private:
-  float clock_phase_;
-  float sample_[2];
-  float next_sample_[2];
-  float gain_;
+  float clock_phase_ = 0.0f;
+  float sample_[2] = { 0.0f,0.0f };
+  float next_sample_[2] = { 0.0f,0.0f };
+  float gain_ = 0.0f;
   LPCSpeechSynth synth_;
 
-  int playback_frame_;
-  int last_playback_frame_;
-  size_t remaining_frame_samples_;
+  int playback_frame_ = 0;
+  int last_playback_frame_ = 0;
+  size_t remaining_frame_samples_ = 0;
 
-  LPCSpeechSynthWordBank* word_bank_;
+  LPCSpeechSynthWordBank* word_bank_ = nullptr;
   
   static const LPCSpeechSynth::Frame phonemes_[kLPCSpeechSynthNumPhonemes];
   

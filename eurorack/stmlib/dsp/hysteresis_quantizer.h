@@ -69,7 +69,7 @@ class HysteresisQuantizer {
   }
 
  private:
-  int quantized_value_;
+  int quantized_value_ = 0;
   
   DISALLOW_COPY_AND_ASSIGN(HysteresisQuantizer);
 };

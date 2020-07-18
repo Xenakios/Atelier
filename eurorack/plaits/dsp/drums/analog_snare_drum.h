@@ -180,12 +180,12 @@ class AnalogSnareDrum {
   }
 
  private:
-  int pulse_remaining_samples_;
-  float pulse_;
-  float pulse_height_;
-  float pulse_lp_;
-  float noise_envelope_;
-  float sustain_gain_;
+  int pulse_remaining_samples_ = 0;
+  float pulse_ = 0.0f;
+  float pulse_height_ = 0.0f;
+  float pulse_lp_ = 0.0f;
+  float noise_envelope_ = 0.0f;
+  float sustain_gain_ = 0.0f;
   
   stmlib::Svf resonator_[kNumModes];
   stmlib::Svf noise_filter_;

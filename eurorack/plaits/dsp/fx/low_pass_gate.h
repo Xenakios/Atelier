@@ -81,7 +81,7 @@ class LowPassGate {
   }
   
  private:
-  float previous_gain_;
+  float previous_gain_ = 0.0f;
   stmlib::Svf filter_;
   
   DISALLOW_COPY_AND_ASSIGN(LowPassGate);

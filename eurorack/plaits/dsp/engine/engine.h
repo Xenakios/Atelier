@@ -50,18 +50,18 @@ enum TriggerState {
 };
 
 struct EngineParameters {
-  TriggerState trigger;
-  float note;
-  float timbre;
-  float morph;
-  float harmonics;
-  float accent;
+  TriggerState trigger = TRIGGER_LOW;
+  float note = 0.0f;
+  float timbre = 0.0f;
+  float morph = 0.0f;
+  float harmonics = 0.0f;
+  float accent = 0.0f;
 };
 
 struct PostProcessingSettings {
   // A negative value indicates that a limiter must be used.
-  float out_gain;
-  float aux_gain;
+  float out_gain = 0.0f;
+  float aux_gain = 0.0f;
   
   // When this flag is set to true, the engine declares that it will 
   // render a signal that already has an envelope (eg: modal drum, 808 kick).
@@ -72,7 +72,7 @@ struct PostProcessingSettings {
   // This is used by the speech synthesis engine, which renders either
   // a continuous vowel sound (which needs to be enveloped by the LPG)
   // or a word/sentence (which is already enveloped).
-  bool already_enveloped;
+  bool already_enveloped = false;
 };
 
 class Engine {

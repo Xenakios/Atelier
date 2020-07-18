@@ -90,10 +90,10 @@ class CosineOscillator {
   }
   
  private:
-  float y1_;
-  float y0_;
-  float iir_coefficient_;
-  float initial_amplitude_;
+  float y1_ = 0.0f;
+  float y0_ = 0.0f;
+  float iir_coefficient_ = 0.0f;
+  float initial_amplitude_ = 0.0f;
 
   DISALLOW_COPY_AND_ASSIGN(CosineOscillator);
 };

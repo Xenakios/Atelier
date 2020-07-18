@@ -46,7 +46,8 @@ class ResonatorSvf {
   
   void Init() {
     for (int i = 0; i < batch_size; ++i) {
-      state_1_[i] = state_2_[i] = 0.0f;
+      state_1_[i] = 0.0f;
+      state_2_[i] = 0.0f;
     }
   }
   
@@ -121,7 +122,7 @@ class Resonator {
       size_t size);
   
  private:
-  int resolution_;
+  int resolution_ = 0;
   
   float mode_amplitude_[kMaxNumModes];
   ResonatorSvf<kModeBatchSize> mode_filters_[kMaxNumModes / kModeBatchSize];

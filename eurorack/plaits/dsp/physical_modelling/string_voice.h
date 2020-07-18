@@ -59,7 +59,7 @@ class StringVoice {
  private:
   stmlib::Svf excitation_filter_;
   String string_;
-  size_t remaining_noise_samples_;
+  size_t remaining_noise_samples_ = 0;
   
   DISALLOW_COPY_AND_ASSIGN(StringVoice);
 };

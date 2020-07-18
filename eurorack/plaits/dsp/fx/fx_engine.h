@@ -252,11 +252,11 @@ class FxEngine {
     }
     
    private:
-    float accumulator_;
-    float previous_read_;
-    float lfo_value_[2];
-    T* buffer_;
-    int32_t write_ptr_;
+    float accumulator_ = 0.0f;
+    float previous_read_ = 0.0f;
+    float lfo_value_[2] = { 0.0f,0.0f };
+    T* buffer_ = nullptr;
+    int32_t write_ptr_ = 0;
 
     DISALLOW_COPY_AND_ASSIGN(Context);
   };
@@ -288,8 +288,8 @@ class FxEngine {
     MASK = size - 1
   };
   
-  int32_t write_ptr_;
-  T* buffer_;
+  int32_t write_ptr_ = 0;
+  T* buffer_ = nullptr;
   stmlib::CosineOscillator lfo_[2];
   
   DISALLOW_COPY_AND_ASSIGN(FxEngine);

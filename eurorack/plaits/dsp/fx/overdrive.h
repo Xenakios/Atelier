@@ -72,8 +72,8 @@ class Overdrive {
   }
   
  private:
-  float pre_gain_;
-  float post_gain_;
+  float pre_gain_ = 0.0f;
+  float post_gain_ = 0.0f;
   
   DISALLOW_COPY_AND_ASSIGN(Overdrive);
 };

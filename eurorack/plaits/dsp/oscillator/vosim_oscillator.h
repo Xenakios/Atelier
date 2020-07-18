@@ -124,15 +124,15 @@ class VOSIMOscillator {
   }
 
   // Oscillator state.
-  float carrier_phase_;
-  float formant_1_phase_;
-  float formant_2_phase_;
+  float carrier_phase_ = 0.0f;
+  float formant_1_phase_ = 0.0f;
+  float formant_2_phase_ = 0.0f;
 
   // For interpolation of parameters.
-  float carrier_frequency_;
-  float formant_1_frequency_;
-  float formant_2_frequency_;
-  float carrier_shape_;
+  float carrier_frequency_ = 0.0f;
+  float formant_1_frequency_ = 0.0f;
+  float formant_2_frequency_ = 0.0f;
+  float carrier_shape_ = 0.0f;
   
   DISALLOW_COPY_AND_ASSIGN(VOSIMOscillator);
 };

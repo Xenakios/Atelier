@@ -57,7 +57,7 @@ class Limiter {
   }
 
  private:
-  float peak_;
+  float peak_ = 0.0f;
 
   DISALLOW_COPY_AND_ASSIGN(Limiter);
 };

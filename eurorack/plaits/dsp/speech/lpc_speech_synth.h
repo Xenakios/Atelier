@@ -91,13 +91,13 @@ class LPCSpeechSynth {
     return a_f + (b_f - a_f) * blend;
   }
   
-  float phase_;
-  float frequency_;
-  float noise_energy_;
-  float pulse_energy_;
+  float phase_ = 0.0f;
+  float frequency_ = 0.0f;
+  float noise_energy_ = 0.0f;
+  float pulse_energy_ = 0.0f;
   
-  float next_sample_;
-  int excitation_pulse_sample_index_;
+  float next_sample_ = 0.0f;
+  int excitation_pulse_sample_index_  = 0;
 
   float k_[kLPCOrder];
   float s_[kLPCOrder + 1];

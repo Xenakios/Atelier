@@ -57,7 +57,7 @@ class GrainEngine : public Engine {
   ZOscillator z_oscillator_;
   stmlib::OnePole dc_blocker_[2];
   
-  float grain_balance_;
+  float grain_balance_ = 0.0f;
   
   DISALLOW_COPY_AND_ASSIGN(GrainEngine);
 };

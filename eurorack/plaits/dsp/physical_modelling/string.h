@@ -80,14 +80,14 @@ class String {
   stmlib::Svf iir_damping_filter_;
   stmlib::DCBlocker dc_blocker_;
   
-  float delay_;
-  float dispersion_noise_;
-  float curved_bridge_;
+  float delay_ = 0.0f;
+  float dispersion_noise_ = 0.0f;
+  float curved_bridge_ = 0.0f;
   
   // Very crappy linear interpolation upsampler used for low pitches that
   // do not fit the delay line. Rarely used.
-  float src_phase_;
-  float out_sample_[2];
+  float src_phase_ = 0.0f;
+  float out_sample_[2] = { 0.0f,0.0f };
 
   DISALLOW_COPY_AND_ASSIGN(String);
 };

@@ -69,15 +69,15 @@ class SAMSpeechSynth {
     Formant formant[kSAMNumFormants]; 
   };
 
-  float phase_;
-  float frequency_;
+  float phase_ = 0.0f;
+  float frequency_ = 0.0f;
 
-  float pulse_next_sample_;
-  float pulse_lp_;
+  float pulse_next_sample_ = 0.0f;
+  float pulse_lp_ = 0.0f;
 
-  uint32_t formant_phase_[3];
-  size_t consonant_samples_;
-  float consonant_index_;
+  uint32_t formant_phase_[3] = { 0,0,0 };
+  size_t consonant_samples_ = 0;
+  float consonant_index_ = 0.0f;
   
   static Phoneme phonemes_[kSAMNumPhonemes];
   static float formant_amplitude_lut[16];

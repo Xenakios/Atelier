@@ -50,20 +50,20 @@ class WavetableEngine : public Engine {
       bool* already_enveloped);
   
  private:
-  float phase_;
+  float phase_ = 0.0f;
   
-  float x_pre_lp_;
-  float y_pre_lp_;
-  float z_pre_lp_;
+  float x_pre_lp_ = 0.0f;
+  float y_pre_lp_ = 0.0f;
+  float z_pre_lp_ = 0.0f;
   
-  float x_lp_;
-  float y_lp_;
-  float z_lp_;
+  float x_lp_ = 0.0f;
+  float y_lp_ = 0.0f;
+  float z_lp_ = 0.0f;
 
-  float previous_x_;
-  float previous_y_;
-  float previous_z_;
-  float previous_f0_;
+  float previous_x_ = 0.0f;
+  float previous_y_ = 0.0f;
+  float previous_z_ = 0.0f;
+  float previous_f0_ = 0.0f;
   
   Differentiator diff_out_;
   

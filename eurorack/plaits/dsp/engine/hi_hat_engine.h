@@ -52,7 +52,7 @@ class HiHatEngine : public Engine {
   HiHat<SquareNoise, SwingVCA, true> hi_hat_1_;
   HiHat<RingModNoise, LinearVCA, false> hi_hat_2_;
   
-  float* temp_buffer_[2];
+  float* temp_buffer_[2] = { nullptr,nullptr };
   
   DISALLOW_COPY_AND_ASSIGN(HiHatEngine);
 };

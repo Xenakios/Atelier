@@ -98,7 +98,7 @@ class Diffuser {
  private:
   typedef FxEngine<8192, FORMAT_12_BIT> E;
   E engine_;
-  float lp_decay_;
+  float lp_decay_ = 0.0f;
   
   DISALLOW_COPY_AND_ASSIGN(Diffuser);
 };

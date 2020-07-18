@@ -160,16 +160,16 @@ class StringSynthOscillator {
  
  private:
   // Oscillator state.
-  float phase_;
-  float next_sample_;
-  int segment_;
+  float phase_ = 0.0f;
+  float next_sample_ = 0.0f;
+  int segment_ = 0;
 
   // For interpolation of parameters.
-  float frequency_;
-  float saw_8_gain_;
-  float saw_4_gain_;
-  float saw_2_gain_;
-  float saw_1_gain_;
+  float frequency_ = 0.0f;
+  float saw_8_gain_ = 0.0f;
+  float saw_4_gain_ = 0.0f;
+  float saw_2_gain_ = 0.0f;
+  float saw_1_gain_ = 0.0f;
 
   DISALLOW_COPY_AND_ASSIGN(StringSynthOscillator);
 };

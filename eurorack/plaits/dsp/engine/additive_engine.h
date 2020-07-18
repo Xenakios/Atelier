@@ -40,7 +40,11 @@ const int kNumHarmonicOscillators = kNumHarmonics / kHarmonicBatchSize;
 
 class AdditiveEngine : public Engine {
  public:
-  AdditiveEngine() { }
+     AdditiveEngine() { 
+         for (int i = 0; i < kNumHarmonics; ++i)
+             amplitudes_[i] = 0.0f;
+     }
+
   ~AdditiveEngine() { }
   
   virtual void Init(stmlib::BufferAllocator* allocator);

@@ -90,11 +90,11 @@ class LPGEnvelope {
   inline float hf_bleed() const { return hf_bleed_; }
   
  private:
-  float vactrol_state_;
-  float gain_;
-  float frequency_;
-  float hf_bleed_;
-  bool ramp_up_;
+  float vactrol_state_ = 0.0f;
+  float gain_ = 0.0f;
+  float frequency_ = 0.0f;
+  float hf_bleed_ = 0.0f;
+  bool ramp_up_ = false;
   
   DISALLOW_COPY_AND_ASSIGN(LPGEnvelope);
 };
@@ -119,7 +119,7 @@ class DecayEnvelope {
   inline float value() const { return value_; }
   
  private:
-  float value_;
+  float value_ = 0.0f;
   
   DISALLOW_COPY_AND_ASSIGN(DecayEnvelope);
 };

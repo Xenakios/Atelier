@@ -52,10 +52,10 @@ class StringEngine : public Engine {
  private:
   StringVoice voice_[kNumStrings];
 
-  float f0_[kNumStrings];
+  float f0_[kNumStrings] = { 0.0f,0.0f,0.0f };
   DelayLine<float, 16> f0_delay_;
-  int active_string_;
-  float* temp_buffer_;
+  int active_string_ = 0;
+  float* temp_buffer_ = nullptr;
   
   DISALLOW_COPY_AND_ASSIGN(StringEngine);
 };

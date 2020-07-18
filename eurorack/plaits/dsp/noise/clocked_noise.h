@@ -89,12 +89,12 @@ class ClockedNoise {
   
  private:
   // Oscillator state.
-  float phase_;
-  float sample_;
-  float next_sample_;
+  float phase_ = 0.0f;
+  float sample_ = 0.0f;
+  float next_sample_ = 0.0f;
 
   // For interpolation of parameters.
-  float frequency_;
+  float frequency_ = 0.0f;
   
   DISALLOW_COPY_AND_ASSIGN(ClockedNoise);
 };

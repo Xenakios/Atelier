@@ -107,10 +107,10 @@ class HarmonicOscillator {
 
  private:
   // Oscillator state.
-  float phase_;
+  float phase_ = 0.0f;
 
   // For interpolation of parameters.
-  float frequency_;
+  float frequency_ = 0.0f;
   float amplitude_[num_harmonics];
   
   DISALLOW_COPY_AND_ASSIGN(HarmonicOscillator);

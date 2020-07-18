@@ -206,17 +206,17 @@ class VariableShapeOscillator {
   }
 
   // Oscillator state.
-  float master_phase_;
-  float slave_phase_;
-  float next_sample_;
-  float previous_pw_;
-  bool high_;
+  float master_phase_ = 0.0f;
+  float slave_phase_ = 0.0f;
+  float next_sample_ = 0.0f;
+  float previous_pw_ = 0.0f;
+  bool high_ = false;
 
   // For interpolation of parameters.
-  float master_frequency_;
-  float slave_frequency_;
-  float pw_;
-  float waveshape_;
+  float master_frequency_ = 0.0f;
+  float slave_frequency_ = 0.0f;
+  float pw_ = 0.0f;
+  float waveshape_ = 0.0f;
 
   DISALLOW_COPY_AND_ASSIGN(VariableShapeOscillator);
 };

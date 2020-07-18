@@ -123,10 +123,10 @@ class SampleRateReducer {
     sample_ = next_sample_ = previous_sample_ = in_out[-1];
   }
    
-  float phase_;
-  float sample_;
-  float previous_sample_;
-  float next_sample_;
+  float phase_ = 0.0f;
+  float sample_ = 0.0f;
+  float previous_sample_ = 0.0f;
+  float next_sample_ = 0.0f;
   
   DISALLOW_COPY_AND_ASSIGN(SampleRateReducer);
 };

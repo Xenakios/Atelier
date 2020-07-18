@@ -82,7 +82,7 @@ class Particle {
   }
  
  private:
-  float pre_gain_;
+  float pre_gain_ = 0.0f;
   stmlib::Svf filter_;
   
   DISALLOW_COPY_AND_ASSIGN(Particle);

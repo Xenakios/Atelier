@@ -92,7 +92,7 @@ class SquareNoise {
   }
 
  private:
-  uint32_t phase_[6];
+  uint32_t phase_[6] = { 0,0,0,0,0,0 };
 
   DISALLOW_COPY_AND_ASSIGN(SquareNoise);
 };
@@ -242,10 +242,10 @@ class HiHat {
   }
 
  private:
-  float envelope_;
-  float noise_clock_;
-  float noise_sample_;
-  float sustain_gain_;
+  float envelope_ = 0.0f;
+  float noise_clock_ = 0.0f;
+  float noise_sample_ = 0.0f;
+  float sustain_gain_ = 0.0f;
 
   MetallicNoiseSource metallic_noise_;
   stmlib::Svf noise_coloration_svf_;

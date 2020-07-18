@@ -68,9 +68,9 @@ class SpeechEngine : public Engine {
   LPCSpeechSynthController lpc_speech_synth_controller_;
   LPCSpeechSynthWordBank lpc_speech_synth_word_bank_;
   
-  float* temp_buffer_[2];
-  float prosody_amount_;
-  float speed_;
+  float* temp_buffer_[2] = { nullptr,nullptr };
+  float prosody_amount_ = 0.0f;
+  float speed_ = 0.0f;
   
   DISALLOW_COPY_AND_ASSIGN(SpeechEngine);
 };

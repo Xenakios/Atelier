@@ -69,10 +69,10 @@ class BufferAllocator {
   inline size_t free() const { return free_; }
 
  private:
-  uint8_t* next_;
-  uint8_t* buffer_;
-  size_t free_;
-  size_t size_;
+  uint8_t* next_ = nullptr;
+  uint8_t* buffer_ = nullptr;
+  size_t free_ = 0;
+  size_t size_ = 0;
 
   DISALLOW_COPY_AND_ASSIGN(BufferAllocator);
 };

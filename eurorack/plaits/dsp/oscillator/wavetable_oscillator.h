@@ -54,8 +54,8 @@ class Differentiator {
     return lp_;
   }
  private:
-  float lp_;
-  float previous_;
+  float lp_ = 0.0f;
+  float previous_ = 0.0f;
 
   DISALLOW_COPY_AND_ASSIGN(Differentiator);
 };
@@ -169,13 +169,13 @@ class WavetableOscillator {
 
  private:
   // Oscillator state.
-  float phase_;
-
+  float phase_ = 0.0f;
+   
   // For interpolation of parameters.
-  float frequency_;
-  float amplitude_;
-  float waveform_;
-  float lp_;
+  float frequency_ = 0.0f;
+  float amplitude_ = 0.0f;
+  float waveform_ = 0.0f;
+  float lp_ = 0.0f;
   
   Differentiator differentiator_;
   

@@ -49,8 +49,8 @@ class ModalEngine : public Engine {
   
  private:
   ModalVoice voice_;
-  float* temp_buffer_;
-  float harmonics_lp_;
+  float* temp_buffer_ = nullptr;
+  float harmonics_lp_ = 0.0f;
   
   DISALLOW_COPY_AND_ASSIGN(ModalEngine);
 };

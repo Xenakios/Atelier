@@ -826,4 +826,4 @@ plugin::Model* createModelTest(const std::string& slug) {
 	return o;
 }
 
-Model *modelPalette = createModelTest<Palette, PaletteWidget>("AtelierPalette");
+Model *modelPalette = createModel<Palette, PaletteWidget>("AtelierPalette");

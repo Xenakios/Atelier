@@ -58,8 +58,8 @@ class SyntheticBassDrumClick {
   }
   
  private:
-  float lp_;
-  float hp_;
+  float lp_ = 0.0f;
+  float hp_ = 0.0f;
   stmlib::Svf filter_;
   
   DISALLOW_COPY_AND_ASSIGN(SyntheticBassDrumClick);
@@ -83,8 +83,8 @@ class SyntheticBassDrumAttackNoise {
   }
   
  private:
-  float lp_;
-  float hp_;
+  float lp_ = 0.0f;
+  float hp_ = 0.0f;
   
   DISALLOW_COPY_AND_ASSIGN(SyntheticBassDrumAttackNoise);
 };
@@ -220,26 +220,26 @@ class SyntheticBassDrum {
   }
 
  private:
-  float f0_;
-  float phase_;
-  float phase_noise_;
+  float f0_ = 0.0f;
+  float phase_ = 0.0f;
+  float phase_noise_ = 0.0f;
 
-  float fm_;
-  float fm_lp_;
-  float body_env_;
-  float body_env_lp_;
-  float transient_env_;
-  float transient_env_lp_;
+  float fm_ = 0.0f;
+  float fm_lp_ = 0.0f;
+  float body_env_ = 0.0f;
+  float body_env_lp_ = 0.0f;
+  float transient_env_ = 0.0f;
+  float transient_env_lp_ = 0.0f;
   
-  float sustain_gain_;
+  float sustain_gain_ = 0.0f;
   
-  float tone_lp_;
+  float tone_lp_ = 0.0f;
   
   SyntheticBassDrumClick click_;
   SyntheticBassDrumAttackNoise noise_;
   
-  int body_env_pulse_width_;
-  int fm_pulse_width_;
+  int body_env_pulse_width_ = 0;
+  int fm_pulse_width_ = 0;
   
   DISALLOW_COPY_AND_ASSIGN(SyntheticBassDrum);
 };

@@ -179,12 +179,12 @@ class SyntheticSnareDrum {
   }
 
  private:
-  float phase_[2];
-  float drum_amplitude_;
-  float snare_amplitude_;
-  float fm_;
-  float sustain_gain_;
-  int hold_counter_;
+  float phase_[2] = { 0.0f,0.0f };
+  float drum_amplitude_ = 0.0f;
+  float snare_amplitude_ = 0.0f;
+  float fm_ = 0.0f;
+  float sustain_gain_ = 0.0f;
+  int hold_counter_ = 0;
   
   stmlib::OnePole drum_lp_;
   stmlib::OnePole snare_hp_;

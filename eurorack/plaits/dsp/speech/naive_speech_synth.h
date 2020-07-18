@@ -69,8 +69,8 @@ class NaiveSpeechSynth {
   };
 
   Oscillator pulse_;
-  float frequency_;
-  size_t click_duration_;
+  float frequency_ = 0.0f;
+  size_t click_duration_ = 0;
   
   stmlib::Svf filter_[kNaiveSpeechNumFormants];
   stmlib::Svf pulse_coloration_;

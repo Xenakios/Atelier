@@ -171,16 +171,16 @@ class AnalogBassDrum {
   }
 
  private:
-  int pulse_remaining_samples_;
-  int fm_pulse_remaining_samples_;
-  float pulse_;
-  float pulse_height_;
-  float pulse_lp_;
-  float fm_pulse_lp_;
-  float retrig_pulse_;
-  float lp_out_;
-  float tone_lp_;
-  float sustain_gain_;
+  int pulse_remaining_samples_ = 0;
+  int fm_pulse_remaining_samples_ = 0;
+  float pulse_ = 0.0f;
+  float pulse_height_ = 0.0f;
+  float pulse_lp_ = 0.0f;
+  float fm_pulse_lp_ = 0.0f;
+  float retrig_pulse_ = 0.0f;
+  float lp_out_ = 0.0f;
+  float tone_lp_ = 0.0f;
+  float sustain_gain_ = 0.0f;
   
   stmlib::Svf resonator_;
   

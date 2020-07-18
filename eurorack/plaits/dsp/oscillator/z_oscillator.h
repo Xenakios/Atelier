@@ -190,16 +190,16 @@ class ZOscillator {
   }
 
   // Oscillator state.
-  float carrier_phase_;
-  float discontinuity_phase_;
-  float formant_phase_;
-  float next_sample_;
+  float carrier_phase_ = 0.0f;
+  float discontinuity_phase_ = 0.0f;
+  float formant_phase_ = 0.0f;
+  float next_sample_ = 0.0f;
 
   // For interpolation of parameters.
-  float carrier_frequency_;
-  float formant_frequency_;
-  float carrier_shape_;
-  float mode_;
+  float carrier_frequency_ = 0.0f;
+  float formant_frequency_ = 0.0f;
+  float carrier_shape_ = 0.0f;
+  float mode_ = 0.0f;
   
   DISALLOW_COPY_AND_ASSIGN(ZOscillator);
 };

@@ -115,13 +115,13 @@ class GrainEnvelope {
   }
   
  private:
-  float from_;
-  float interval_;
-  float phase_;
-  float fm_;
-  float amplitude_;
-  float previous_size_ratio_;
-  float filter_coefficient_;
+  float from_ = 0.0f;
+  float interval_ = 0.0f;
+  float phase_ = 0.0f;
+  float fm_ = 0.0f;
+  float amplitude_ = 0.0f;
+  float previous_size_ratio_ = 0.0f;
+  float filter_coefficient_ = 0.0f;
   
   DISALLOW_COPY_AND_ASSIGN(GrainEnvelope);
 };
@@ -176,12 +176,12 @@ class AdditiveSawOscillator {
 
  private:
   // Oscillator state.
-  float phase_;
-  float next_sample_;
+  float phase_ = 0.0f;
+  float next_sample_ = 0.0f;
 
   // For interpolation of parameters.
-  float frequency_;
-  float gain_;
+  float frequency_ = 0.0f;
+  float gain_ = 0.0f;
 
   DISALLOW_COPY_AND_ASSIGN(AdditiveSawOscillator);
 };
@@ -224,7 +224,7 @@ class SwarmVoice {
   };
   
  private:
-  float rank_;
+  float rank_ = 0.0f;
 
   GrainEnvelope envelope_;
   AdditiveSawOscillator saw_;
