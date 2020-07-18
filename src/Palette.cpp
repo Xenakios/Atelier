@@ -795,5 +795,35 @@ struct PaletteWidget : ModuleWidget {
 	SvgWidget* swgWidget = nullptr;
 };
 
+template <class TModule, class TModuleWidget>
+plugin::Model* createModelTest(const std::string& slug) {
+	struct TModel : plugin::Model {
+		engine::Module* createModule() override {
+			unsigned char* membuf = (unsigned char*)malloc(sizeof(TModule));
+			memset(membuf,0,sizeof(TModule));
+			new(membuf) TModule;
+			//engine::Module* m = new TModule;
+			engine::Module* m = (engine::Module*)membuf;
+			m->model = this;
+			return m;
+		}
+		app::ModuleWidget* createModuleWidget() override {
+			TModule* m = new TModule;
+			m->engine::Module::model = this;
+			app::ModuleWidget* mw = new TModuleWidget(m);
+			mw->model = this;
+			return mw;
+		}
+		app::ModuleWidget* createModuleWidgetNull() override {
+			app::ModuleWidget* mw = new TModuleWidget(NULL);
+			mw->model = this;
+			return mw;
+		}
+	};
 
-Model *modelPalette = createModel<Palette, PaletteWidget>("AtelierPalette");
+	plugin::Model* o = new TModel;
+	o->slug = slug;
+	return o;
+}
+
+Model *modelPalette = createModelTest<Palette, PaletteWidget>("AtelierPalette");
