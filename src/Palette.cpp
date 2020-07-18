@@ -80,7 +80,7 @@ struct Palette : Module {
 	plaits::Voice voice[MAX_PALETTE_VOICES];
 	plaits::Patch patch[MAX_PALETTE_VOICES] = {};
 	plaits::Modulations modulations[MAX_PALETTE_VOICES] = {};
-	char shared_buffer[MAX_PALETTE_VOICES][16384] = {};
+	char shared_buffer[MAX_PALETTE_VOICES][32768] = {};
 	
 	int lpg_mode = 0;
 	dsp::SampleRateConverter<2> outputSrc[MAX_PALETTE_VOICES];
@@ -126,6 +126,7 @@ struct Palette : Module {
 		configParam(SECONDARY_FREQ_PARAM, -7.0, 7.0, 0.0, "Tuning");
 		for (int i=0;i<MAX_PALETTE_VOICES;++i)
 		{
+			memset(shared_buffer[i],0,sizeof(shared_buffer[i]));
 			stmlib::BufferAllocator allocator(shared_buffer[i], sizeof(shared_buffer[i]));
 			voice[i].Init(&allocator);
 			outputSrc[i].setQuality(4);
