@@ -126,6 +126,7 @@ struct Palette : Module {
 		configParam(SECONDARY_FREQ_PARAM, -7.0, 7.0, 0.0, "Tuning");
 		for (int i=0;i<MAX_PALETTE_VOICES;++i)
 		{
+			memset(shared_buffer[i],0,sizeof(shared_buffer[i]));
 			stmlib::BufferAllocator allocator(shared_buffer[i], sizeof(shared_buffer[i]));
 			voice[i].Init(&allocator);
 			outputSrc[i].setQuality(4);
