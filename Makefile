@@ -7,8 +7,8 @@ RACK_DIR ?= ../Rack-SDK
 # FLAGS will be passed to both the C and C++ compiler
 FLAGS += -I./eurorack 
 FLAGS += -DTEST
-# CFLAGS += -fsanitize=undefined
-# CXXFLAGS += -fsanitize=undefined
+# CFLAGS += -g
+# CXXFLAGS += -g
 
 # Careful about linking to shared libraries, since you can't assume much about the user's environment and library search path.
 # Static libraries are fine, but they should be added to this plugin's build system.
@@ -25,8 +25,6 @@ SOURCES += $(wildcard eurorack/plaits/dsp/engine/*.cc)
 SOURCES += $(wildcard eurorack/plaits/dsp/speech/*.cc)
 SOURCES += $(wildcard eurorack/plaits/dsp/physical_modelling/*.cc)
 SOURCES += eurorack/plaits/resources.cc
-
-# SOURCES += eurorack/clouds/dsp/pvoc/spectral_clouds_transformation.cc
 
 # Add files to the ZIP package when running `make dist`
 # The compiled plugin and "plugin.json" are automatically added.
