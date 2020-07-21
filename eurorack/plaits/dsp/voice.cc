@@ -210,7 +210,7 @@ void Voice::Render(
       modulations.harmonics_patched,
       modulations.harmonics,
       use_internal_envelope,
-      internal_envelope_amplitude * decay_envelope_.value(),
+      decay_envelope_.value(),
       0.0f,
       0.0f,
       1.0f);
