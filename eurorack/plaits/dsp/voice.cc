@@ -151,7 +151,7 @@ void Voice::Render(
 
   // Actual synthesis parameters.
 
-  p.harmonics = patch.harmonics + modulations.harmonics;
+  p.harmonics = patch.harmonics + modulations.harmonics * patch.harmonics_cv_amount;
   CONSTRAIN(p.harmonics, 0.0f, 1.0f);
 
   float internal_envelope_amplitude = 1.0f;
@@ -210,7 +210,7 @@ void Voice::Render(
       modulations.harmonics_patched,
       modulations.harmonics,
       use_internal_envelope,
-      internal_envelope_amplitude * decay_envelope_.value(),
+      decay_envelope_.value(),
       0.0f,
       0.0f,
       1.0f);
