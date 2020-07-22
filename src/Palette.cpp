@@ -95,7 +95,7 @@ struct Palette : Module {
 	float currentPitch = 0.0f;
 
 	int curNumVoices = 0;
-
+	
 	Palette() {
 		config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS);
 		configParam(MODEL1_PARAM, 0.0, 1.0, 0.0, "Model selection 1");
@@ -133,7 +133,10 @@ struct Palette : Module {
 		}
 		onReset();
 	}
-
+	~Palette()
+	{
+		
+	}
 	void onReset() override {
 		for (int i=0;i<MAX_PALETTE_VOICES;++i)
 		{
@@ -598,6 +601,7 @@ struct Model_LEDWidget : public TransparentWidget
 };
 
 struct PaletteWidget : ModuleWidget {
+	rack::FramebufferWidget* fbWidget = nullptr;
 	void step() override
 	{
 		ModuleWidget::step();
@@ -611,6 +615,8 @@ struct PaletteWidget : ModuleWidget {
 				{
 					swgWidget->show();	
 					swgWidget->setSvg(subPanels[curSubPanel]);
+					if (fbWidget!=nullptr)
+						fbWidget->dirty = true;
 				}
 				else 
 				{
@@ -630,11 +636,22 @@ struct PaletteWidget : ModuleWidget {
 			sprintf(resName,"res/palette/palette_%d.svg",i+1);
 			subPanels[i] = APP->window->loadSvg(asset::plugin(pluginInstance, resName));	
 		}
+#define FBFORSVG
+#ifdef FBFORSVG
+		fbWidget = new FramebufferWidget;
+		fbWidget->box = {{0,0},{box.size}};
+		addChild(fbWidget);
+		swgWidget = new SvgWidget;
+		swgWidget->setSvg(subPanels[0]);
+		fbWidget->addChild(swgWidget);
+		swgWidget->box = {{0,0},{box.size}};
+		fbWidget->dirty = true;
+#else
 		swgWidget = new SvgWidget;
 		swgWidget->setSvg(subPanels[0]);
 		addChild(swgWidget);
 		swgWidget->box = {{0,0},{box.size}};
-		
+#endif
 		addParam(createParamCentered<PaletteKnobLarge>(Vec(71, 235.5), module, Palette::FREQ_PARAM));
 		addParam(createParamCentered<PaletteKnobLarge>(Vec(199,235.5), module, Palette::SECONDARY_FREQ_PARAM));
 		addParam(createParamCentered<PaletteKnobLarge>(Vec(135,198.5), module, Palette::HARMONICS_PARAM));
@@ -701,7 +718,7 @@ struct PaletteWidget : ModuleWidget {
 
 	void appendContextMenu(Menu *menu) override {
 		Palette *module = dynamic_cast<Palette*>(this->module);
-
+		
 		struct LPGMenuItem : MenuItem
 		{
 			Palette* module = nullptr;
