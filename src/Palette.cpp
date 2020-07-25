@@ -247,7 +247,9 @@ struct Palette : Module {
 		float spreadamt = params[UNISONOSPREAD_PARAM].getValue();
 		if (inputs[SPREAD_INPUT].isConnected())
 		{
-			spreadamt += rescale(inputs[SPREAD_INPUT].getVoltage()*params[UNISONOSPREAD_CV_PARAM].getValue(),-5.0f,5.0f,-1.0f,1.0f);
+			spreadamt += 
+				rescale(inputs[SPREAD_INPUT].getVoltage()*params[UNISONOSPREAD_CV_PARAM].getValue(),
+				-5.0f,5.0f,-0.5f,0.5f);
 			spreadamt = clamp(spreadamt,0.0f,1.0f);
 		}
 		int numpolychs = std::max(inputs[NOTE_INPUT].getChannels(),1);
