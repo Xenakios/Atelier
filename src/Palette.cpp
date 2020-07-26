@@ -53,6 +53,7 @@ struct Palette : Module {
 		ENGINE_CV_PARAM,
 		UNISONOSPREAD_CV_PARAM,
 		SECONDARY_FREQ_PARAM,
+		WAVETABLE_AUX_MODE,
 		NUM_PARAMS
 	};
 	enum InputIds {
@@ -124,6 +125,7 @@ struct Palette : Module {
 		configParam(ENGINE_CV_PARAM, -1.0, 1.0, 0.0, "Engine choice CV");
 		configParam(UNISONOSPREAD_CV_PARAM, -1.0, 1.0, 0.0, "Unisono/Spread CV");
 		configParam(SECONDARY_FREQ_PARAM, -7.0, 7.0, 0.0, "Tuning");
+		configParam(WAVETABLE_AUX_MODE, 0.0, 6.0, 0.0, "Wavetable Aux output mode");
 		for (int i=0;i<MAX_PALETTE_VOICES;++i)
 		{
 			memset(shared_buffer[i],0,sizeof(shared_buffer[i]));
@@ -304,7 +306,7 @@ struct Palette : Module {
 			bool fm_input_connected = inputs[FREQ_INPUT].isConnected();
 			for (int i=0;i<numpolychs;++i)
 			{
-				voice[i].wsAuxMode = wsAuxMode;
+				voice[i].wsAuxMode = params[WAVETABLE_AUX_MODE].getValue();
 				voice[i].lpg_behavior = (plaits::Voice::LPGBehavior)lpg_mode;
 				patch[i].note = 60.f + pitch * 12.f + pitchAdjust;
 				if (unispreadchans>1)
@@ -613,12 +615,25 @@ struct Model_LEDWidget : public TransparentWidget
 
 struct PaletteWidget : ModuleWidget {
 	rack::FramebufferWidget* fbWidget = nullptr;
+	PaletteKnobSmall* wtmodeKnob = nullptr;
 	void step() override
 	{
 		ModuleWidget::step();
 		auto plaits = dynamic_cast<Palette*>(module);
 		if (plaits)
 		{
+			if (wtmodeKnob!=nullptr)
+			{
+				if (plaits->patch->engine!=5)
+				{
+					wtmodeKnob->hide();
+				}
+				else
+				{
+					wtmodeKnob->show();
+				}
+			}
+			
 			if (plaits->patch->engine!=curSubPanel)
 			{
 				curSubPanel = plaits->patch->engine;
@@ -721,6 +736,10 @@ struct PaletteWidget : ModuleWidget {
 
 		addParam(createParamCentered<PaletteKnobSmall>(Vec(252,76), module, Palette::UNISONOSPREAD_CV_PARAM));
 		addInput(createInputCentered<MyPort1>(Vec(252,98), module, Palette::SPREAD_INPUT));
+		
+		wtmodeKnob = createParamCentered<PaletteKnobSmall>(Vec(167,327), module, Palette::WAVETABLE_AUX_MODE);
+		wtmodeKnob->snap = true;
+		addParam(wtmodeKnob);
 
 		Model_LEDWidget* ledwid = new Model_LEDWidget(module);
 		ledwid->box = {{0,0},{box.size}};
