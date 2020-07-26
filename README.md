@@ -21,6 +21,8 @@ New modules based on Mutable/Audible Instruments modules or completely new modul
 - Engine can be chosen by clicking on the engine LEDs
 - Engine choice CV modulation shown on the engine choice LEDs
 - Octave stepped coarse tuning knob (can be switched to free mode in the right-click module menu)
+- v1.0.2 : Spiced up the Wavetable engine Aux output with a detuned -1 octave sine oscillator, bit XOR'ed with the main output (the old 5 bit Lo-Fi mode is still available
+  from the module right-click menu)
 
 Based on Mutable Instruments Plaits and Audible Instruments Macro Oscillator 2 with code from Emilie Gillet (Mutable Instruments), Andrew Belt (VCV), anlexmatos, Xenakios and other contributors. 
 
