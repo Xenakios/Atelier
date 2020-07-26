@@ -3,7 +3,7 @@
 - Palette : Optimized panel drawing code
 - Palette : Incorporated some parameter handling fixes from anlexmatos
 - Palette : Added new Aux output processing for the Wavetable engine, since the old mode that reduced the output
-  to 5 bits didn't do much. The old mode is still available from the right-click menu. 
+  resolution to 5 bits didn't do much, IMHO. The old mode is still available from the right-click menu. 
 
 # 1.0.1
 
