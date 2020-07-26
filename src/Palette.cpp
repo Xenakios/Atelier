@@ -96,7 +96,7 @@ struct Palette : Module {
 	float currentPitch = 0.0f;
 
 	int curNumVoices = 0;
-	int wsAuxMode = 1;
+	
 	Palette() {
 		config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS);
 		configParam(MODEL1_PARAM, 0.0, 1.0, 0.0, "Model selection 1");
@@ -166,7 +166,6 @@ struct Palette : Module {
 		json_object_set_new(rootJ, "freetune", json_boolean(freeTune));
 		json_object_set_new(rootJ, "showmods", json_boolean(showModulations));
 		json_object_set_new(rootJ, "lpgMode", json_integer(lpg_mode));
-		json_object_set_new(rootJ, "wsAuxMode", json_integer(wsAuxMode));
 		return rootJ;
 	}
 
@@ -202,10 +201,6 @@ struct Palette : Module {
 		if (lpgModeJ)
 			lpg_mode = json_integer_value(lpgModeJ);
 		json_t *wsAuxJ = json_object_get(rootJ, "wsAuxMode");
-		if (wsAuxJ)
-			wsAuxMode = json_integer_value(wsAuxJ);
-		else
-			wsAuxMode = 0;
 	}
 	float getModulatedParamNormalized(int paramid, int whichvoice=0)
 	{
@@ -789,7 +784,7 @@ struct PaletteWidget : ModuleWidget {
 			Palette *module;
 			int newMode = 0;
 			void onAction(const event::Action &e) override {
-				module->wsAuxMode = newMode;
+				module->params[Palette::WAVETABLE_AUX_MODE].setValue(newMode);
 			}
 		};
 
@@ -810,7 +805,8 @@ struct PaletteWidget : ModuleWidget {
 				};
 				for (int i=0;i<7;++i)
 				{
-					auto menuItem = createMenuItem<WaveShaperAuxModeItem>(menutexts[i], CHECKMARK(module->wsAuxMode==i));
+					auto menuItem = createMenuItem<WaveShaperAuxModeItem>(menutexts[i], 
+						CHECKMARK((int)module->params[Palette::WAVETABLE_AUX_MODE].getValue()==i));
 					menuItem->module = module;
 					menuItem->newMode = i;
 					submenu->addChild(menuItem);

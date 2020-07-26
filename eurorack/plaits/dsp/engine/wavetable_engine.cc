@@ -95,30 +95,20 @@ void WavetableEngine::Render(
   const float f0 = NoteToFrequency(parameters.note);
   float f1 = f0; 
   float auxoscgain = 0.0f;
-  if (parameters.wsauxmode == 1)
+  const float auxParams[7][2] = {
+    {0.0f,0.0f},
+    {-12.1f,0.1f},
+    {-12.1f,0.5f},
+    {-0.1f,0.1f},
+    {-0.1f,0.5f},
+    {12.1f,0.1f},
+    {12.1f,0.5f}
+  };
+  int wsauxmode = parameters.wsauxmode;
+  if (auxParams[wsauxmode][1]>0.0f)
   {
-     f1 = NoteToFrequency(parameters.note-12.1f);
-     auxoscgain = 0.1f;
-  } else if (parameters.wsauxmode == 2)
-  {
-    f1 = NoteToFrequency(parameters.note-12.1f);
-    auxoscgain = 0.5f;
-  } else if (parameters.wsauxmode == 3)
-  {
-    f1 = NoteToFrequency(parameters.note-0.1f);
-    auxoscgain = 0.1f;
-  } else if (parameters.wsauxmode == 4)
-  {
-    f1 = NoteToFrequency(parameters.note-0.1f);
-    auxoscgain = 0.5f;
-  } else if (parameters.wsauxmode == 5)
-  {
-    f1 = NoteToFrequency(parameters.note+12.1f);
-    auxoscgain = 0.1f;
-  } else if (parameters.wsauxmode == 6)
-  {
-    f1 = NoteToFrequency(parameters.note+12.1f);
-    auxoscgain = 0.5f;
+    f1 = NoteToFrequency(parameters.note+auxParams[wsauxmode][0]);
+    auxoscgain = auxParams[wsauxmode][1];
   }
   
   ONE_POLE(x_pre_lp_, parameters.timbre * 6.9999f, 0.2f);
