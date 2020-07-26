@@ -56,6 +56,7 @@ struct EngineParameters {
   float morph = 0.0f;
   float harmonics = 0.0f;
   float accent = 0.0f;
+  int wsauxmode = 0;
 };
 
 struct PostProcessingSettings {

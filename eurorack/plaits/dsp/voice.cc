@@ -125,7 +125,7 @@ void Voice::Render(
     previous_engine_index_ = engine_index;
   }
   EngineParameters p;
-
+  p.wsauxmode = wsAuxMode;
   bool rising_edge = trigger_state_ && !previous_trigger_state;
   float note = (modulations.note + previous_note_) * 0.5f;
   previous_note_ = modulations.note;

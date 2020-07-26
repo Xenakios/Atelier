@@ -93,7 +93,7 @@ void WavetableEngine::Render(
     size_t size,
     bool* already_enveloped) {
   const float f0 = NoteToFrequency(parameters.note);
-  
+  const float f1 = NoteToFrequency(parameters.note-12.1f);
   ONE_POLE(x_pre_lp_, parameters.timbre * 6.9999f, 0.2f);
   ONE_POLE(y_pre_lp_, parameters.morph * 6.9999f, 0.2f);
   ONE_POLE(z_pre_lp_, parameters.harmonics * 6.9999f, 0.05f);
@@ -190,11 +190,16 @@ void WavetableEngine::Render(
       float mix = xyz0 + (xyz1 - xyz0) * z_fractional;
       mix = diff_out_.Process(cutoff, mix) * gain;
       *out++ = mix;
-      float sinus = sin_osc_.Next(f0*0.499) * 0.5f;
-      short sinus_i = sinus * 32768.0f;
-      short out_i = mix * 32768.0f;
-      *aux++ = ((out_i ^ sinus_i) / 32768.0f);
-      // *aux++ = static_cast<float>(static_cast<int>(mix * 32.0f)) / 32.0f;
+      if (parameters.wsauxmode == 0)
+      {
+          *aux++ = static_cast<float>(static_cast<int>(mix * 32.0f)) / 32.0f;
+      } else
+      {
+          float sinus = sin_osc_.Next(f1) * 0.1f;
+          short sinus_i = sinus * 32768.0f;
+          short out_i = mix * 32768.0f;
+          *aux++ = ((out_i ^ sinus_i) / 32768.0f);
+      }
     }
   }
 }

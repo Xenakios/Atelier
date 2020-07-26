@@ -177,6 +177,7 @@ class Voice {
     LPGB_Bypassed
   };
   LPGBehavior lpg_behavior = LPGB_Classic;
+  int wsAuxMode = 0;
  private:
   void ComputeDecayParameters(const Patch& settings);
 

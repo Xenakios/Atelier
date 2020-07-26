@@ -95,7 +95,7 @@ struct Palette : Module {
 	float currentPitch = 0.0f;
 
 	int curNumVoices = 0;
-	
+	int wsAuxMode = 0;
 	Palette() {
 		config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS);
 		configParam(MODEL1_PARAM, 0.0, 1.0, 0.0, "Model selection 1");
@@ -164,6 +164,7 @@ struct Palette : Module {
 		json_object_set_new(rootJ, "freetune", json_boolean(freeTune));
 		json_object_set_new(rootJ, "showmods", json_boolean(showModulations));
 		json_object_set_new(rootJ, "lpgMode", json_integer(lpg_mode));
+		json_object_set_new(rootJ, "wsAuxMode", json_integer(wsAuxMode));
 		return rootJ;
 	}
 
@@ -198,6 +199,9 @@ struct Palette : Module {
 		json_t *lpgModeJ = json_object_get(rootJ, "lpgMode");
 		if (lpgModeJ)
 			lpg_mode = json_integer_value(lpgModeJ);
+		json_t *wsAuxJ = json_object_get(rootJ, "wsAuxMode");
+		if (wsAuxJ)
+			wsAuxMode = json_integer_value(wsAuxJ);
 	}
 	float getModulatedParamNormalized(int paramid, int whichvoice=0)
 	{
@@ -298,6 +302,7 @@ struct Palette : Module {
 			bool fm_input_connected = inputs[FREQ_INPUT].isConnected();
 			for (int i=0;i<numpolychs;++i)
 			{
+				voice[i].wsAuxMode = wsAuxMode;
 				voice[i].lpg_behavior = (plaits::Voice::LPGBehavior)lpg_mode;
 				patch[i].note = 60.f + pitch * 12.f + pitchAdjust;
 				if (unispreadchans>1)
@@ -759,6 +764,16 @@ struct PaletteWidget : ModuleWidget {
 				module->lowCpu ^= true;
 			}
 		};
+		
+		struct WaveShaperAuxModeItem : MenuItem {
+			Palette *module;
+			void onAction(const event::Action &e) override {
+				if (module->wsAuxMode == 0)
+					module->wsAuxMode = 1;
+				else
+					module->wsAuxMode = 0;
+			}
+		};
 
 		struct PlaitsShowModulationsItem : MenuItem {
 			Palette *module;
@@ -795,6 +810,13 @@ struct PaletteWidget : ModuleWidget {
 			= createMenuItem<PlaitsShowModulationsItem>("Show modulation amounts on knobs", CHECKMARK(module->showModulations));
 		showModsItem->module = module;
 		menu->addChild(showModsItem);
+
+		// WaveShaperAuxModeItem
+		WaveShaperAuxModeItem *auxMode 
+		= createMenuItem<WaveShaperAuxModeItem>("Rougher Aux output for WaveShaper engine", 
+			CHECKMARK(module->wsAuxMode == 1));
+		auxMode->module = module;
+		menu->addChild(auxMode);
 
 		LPGMenuItems* lpg_items = createMenuItem<LPGMenuItems>("LPG mode",RIGHT_ARROW);
 		lpg_items->module = module;
