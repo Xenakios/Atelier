@@ -758,10 +758,7 @@ struct PaletteWidget : ModuleWidget {
 				return submenu;
 			}
 		};
-
-
-
-
+		
 		struct PlaitsLowCpuItem : MenuItem {
 			Palette *module;
 			void onAction(const event::Action &e) override {
@@ -771,11 +768,37 @@ struct PaletteWidget : ModuleWidget {
 		
 		struct WaveShaperAuxModeItem : MenuItem {
 			Palette *module;
+			int newMode = 0;
 			void onAction(const event::Action &e) override {
-				if (module->wsAuxMode == 0)
-					module->wsAuxMode = 1;
-				else
-					module->wsAuxMode = 0;
+				module->wsAuxMode = newMode;
+			}
+		};
+
+		struct WaveShaperSubMenu : MenuItem
+		{
+			Palette* module = nullptr;
+			Menu *createChildMenu() override 
+			{
+				Menu *submenu = new Menu();
+				std::string menutexts[7] = {
+				"Classic (5 bit output)",
+				"Sine subosc at -12.1 semitones and 10% gain XOR'ed with main output",
+				"Sine subosc at -12.1 semitones and 50% gain XOR'ed with main output",
+				"Sine subosc at -0.1 semitones and 10% gain XOR'ed with main output",
+				"Sine subosc at -0.1 semitones and 50% gain XOR'ed with main output",
+				"Sine subosc at +12.1 semitones and 10% gain XOR'ed with main output",
+				"Sine subosc at +12.1 semitones and 50% gain XOR'ed with main output",
+				};
+				for (int i=0;i<7;++i)
+				{
+					auto menuItem = createMenuItem<WaveShaperAuxModeItem>(menutexts[i], CHECKMARK(module->wsAuxMode==i));
+					menuItem->module = module;
+					menuItem->newMode = i;
+					submenu->addChild(menuItem);
+				}
+				
+				
+				return submenu;
 			}
 		};
 
@@ -816,9 +839,9 @@ struct PaletteWidget : ModuleWidget {
 		menu->addChild(showModsItem);
 
 		// WaveShaperAuxModeItem
-		WaveShaperAuxModeItem *auxMode 
-		= createMenuItem<WaveShaperAuxModeItem>("New Aux output mode for Wave Table engine", 
-			CHECKMARK(module->wsAuxMode == 1));
+		WaveShaperSubMenu *auxMode 
+		= createMenuItem<WaveShaperSubMenu>("Aux output mode for Wave Table engine", 
+			RIGHT_ARROW);
 		auxMode->module = module;
 		menu->addChild(auxMode);
 
