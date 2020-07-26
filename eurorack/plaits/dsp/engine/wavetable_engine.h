@@ -33,6 +33,7 @@
 
 #include "plaits/dsp/engine/engine.h"
 #include "plaits/dsp/oscillator/wavetable_oscillator.h"
+#include "plaits/dsp/oscillator/sine_oscillator.h"
 
 namespace plaits {
 
@@ -66,7 +67,7 @@ class WavetableEngine : public Engine {
   float previous_f0_ = 0.0f;
   
   Differentiator diff_out_;
-  
+  SineOscillator sin_osc_;
   DISALLOW_COPY_AND_ASSIGN(WavetableEngine);
 };
 

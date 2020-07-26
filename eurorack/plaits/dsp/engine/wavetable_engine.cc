@@ -54,6 +54,7 @@ void WavetableEngine::Init(BufferAllocator* allocator) {
   previous_f0_ = a0;
 
   diff_out_.Init();
+  sin_osc_.Init();
 }
 
 void WavetableEngine::Reset() {
@@ -189,7 +190,11 @@ void WavetableEngine::Render(
       float mix = xyz0 + (xyz1 - xyz0) * z_fractional;
       mix = diff_out_.Process(cutoff, mix) * gain;
       *out++ = mix;
-      *aux++ = static_cast<float>(static_cast<int>(mix * 32.0f)) / 32.0f;
+      float sinus = sin_osc_.Next(f0*0.499) * 0.5f;
+      short sinus_i = sinus * 32768.0f;
+      short out_i = mix * 32768.0f;
+      *aux++ = ((out_i ^ sinus_i) / 32768.0f);
+      // *aux++ = static_cast<float>(static_cast<int>(mix * 32.0f)) / 32.0f;
     }
   }
 }
