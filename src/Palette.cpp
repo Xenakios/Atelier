@@ -815,7 +815,7 @@ struct PaletteWidget : ModuleWidget {
 
 		// WaveShaperAuxModeItem
 		WaveShaperAuxModeItem *auxMode 
-		= createMenuItem<WaveShaperAuxModeItem>("Rougher Aux output for WaveShaper engine", 
+		= createMenuItem<WaveShaperAuxModeItem>("Alternative Aux output mode for Wave Table engine", 
 			CHECKMARK(module->wsAuxMode == 1));
 		auxMode->module = module;
 		menu->addChild(auxMode);
