@@ -4,6 +4,7 @@
 - Palette : Incorporated some parameter handling fixes from anlexmatos
 - Palette : Added new Aux output processing for the Wavetable engine, since the old mode that reduced the output
   resolution to 5 bits didn't do much, IMHO. The old mode is still available from the right-click menu. 
+  The new mode generates a detuned octave lower sine wave, converts that and the main output to 16 bits and bitwise XORs them.
 
 # 1.0.1
 
