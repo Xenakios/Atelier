@@ -95,7 +95,7 @@ struct Palette : Module {
 	float currentPitch = 0.0f;
 
 	int curNumVoices = 0;
-	int wsAuxMode = 0;
+	int wsAuxMode = 1;
 	Palette() {
 		config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS);
 		configParam(MODEL1_PARAM, 0.0, 1.0, 0.0, "Model selection 1");
@@ -202,6 +202,8 @@ struct Palette : Module {
 		json_t *wsAuxJ = json_object_get(rootJ, "wsAuxMode");
 		if (wsAuxJ)
 			wsAuxMode = json_integer_value(wsAuxJ);
+		else
+			wsAuxMode = 0;
 	}
 	float getModulatedParamNormalized(int paramid, int whichvoice=0)
 	{
