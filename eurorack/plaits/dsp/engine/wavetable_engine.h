@@ -34,6 +34,7 @@
 #include "plaits/dsp/engine/engine.h"
 #include "plaits/dsp/oscillator/wavetable_oscillator.h"
 #include "plaits/dsp/oscillator/sine_oscillator.h"
+#include <random>
 
 namespace plaits {
 
@@ -68,6 +69,9 @@ class WavetableEngine : public Engine {
   
   Differentiator diff_out_;
   SineOscillator sin_osc_;
+  float previousNote_ = 0.0f;
+  short curRand_ = 0;
+  std::mt19937 randGen_;
   DISALLOW_COPY_AND_ASSIGN(WavetableEngine);
 };
 

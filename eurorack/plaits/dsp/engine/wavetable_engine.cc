@@ -93,16 +93,23 @@ void WavetableEngine::Render(
     size_t size,
     bool* already_enveloped) {
   const float f0 = NoteToFrequency(parameters.note);
+  if (fabs(parameters.note-previousNote_)>=1.0)
+  {
+    previousNote_ = parameters.note;
+    std::uniform_int_distribution<short> dist(-32768,32767);
+    curRand_ = dist(randGen_);
+  }
   float f1 = f0; 
   float auxoscgain = 0.0f;
-  const float auxParams[7][2] = {
+  const float auxParams[8][2] = {
     {0.0f,0.0f},
     {-12.1f,0.1f},
     {-12.1f,0.5f},
     {-0.1f,0.1f},
     {-0.1f,0.5f},
     {12.1f,0.1f},
-    {12.1f,0.5f}
+    {12.1f,0.5f},
+    {0.0f,0.5f}
   };
   int wsauxmode = parameters.wsauxmode;
   if (auxParams[wsauxmode][1]>0.0f)
@@ -210,13 +217,18 @@ void WavetableEngine::Render(
       if (parameters.wsauxmode == 0)
       {
           *aux++ = static_cast<float>(static_cast<int>(mix * 32.0f)) / 32.0f;
-      } else
+      } else if (parameters.wsauxmode>0 && parameters.wsauxmode<7)
       {
           float sinus = sin_osc_.Next(f1) * auxoscgain;
           short sinus_i = sinus * 32768.0f;
           short out_i = mix * 32768.0f;
           *aux++ = ((out_i ^ sinus_i) / 32768.0f);
+      } else
+      {
+          short out_i = mix * 32768.0f;
+          *aux++ = ((out_i ^ curRand_) / 32768.0f);
       }
+      
     }
   }
 }

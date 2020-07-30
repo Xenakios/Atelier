@@ -125,7 +125,7 @@ struct Palette : Module {
 		configParam(ENGINE_CV_PARAM, -1.0, 1.0, 0.0, "Engine choice CV");
 		configParam(UNISONOSPREAD_CV_PARAM, -1.0, 1.0, 0.0, "Unisono/Spread CV");
 		configParam(SECONDARY_FREQ_PARAM, -7.0, 7.0, 0.0, "Tuning");
-		configParam(WAVETABLE_AUX_MODE, 0.0, 6.0, 0.0, "Wavetable Aux output mode");
+		configParam(WAVETABLE_AUX_MODE, 0.0, 7.0, 0.0, "Wavetable Aux output mode");
 		for (int i=0;i<MAX_PALETTE_VOICES;++i)
 		{
 			memset(shared_buffer[i],0,sizeof(shared_buffer[i]));
@@ -794,7 +794,7 @@ struct PaletteWidget : ModuleWidget {
 			Menu *createChildMenu() override 
 			{
 				Menu *submenu = new Menu();
-				std::string menutexts[7] = {
+				std::string menutexts[8] = {
 				"Classic (5 bit output)",
 				"Sine subosc at -12.1 semitones and 10% gain XOR'ed with main output",
 				"Sine subosc at -12.1 semitones and 50% gain XOR'ed with main output",
@@ -802,8 +802,9 @@ struct PaletteWidget : ModuleWidget {
 				"Sine subosc at -0.1 semitones and 50% gain XOR'ed with main output",
 				"Sine subosc at +12.1 semitones and 10% gain XOR'ed with main output",
 				"Sine subosc at +12.1 semitones and 50% gain XOR'ed with main output",
+				"Random value XOR'ed with main output",
 				};
-				for (int i=0;i<7;++i)
+				for (int i=0;i<8;++i)
 				{
 					auto menuItem = createMenuItem<WaveShaperAuxModeItem>(menutexts[i], 
 						CHECKMARK((int)module->params[Palette::WAVETABLE_AUX_MODE].getValue()==i));
