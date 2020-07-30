@@ -69,9 +69,7 @@ class WavetableEngine : public Engine {
   
   Differentiator diff_out_;
   SineOscillator sin_osc_;
-  float previousNote_ = 0.0f;
-  short curRand_ = 0;
-  std::mt19937 randGen_;
+  float auxRandTable_[32];
   DISALLOW_COPY_AND_ASSIGN(WavetableEngine);
 };
 

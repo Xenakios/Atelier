@@ -37,6 +37,11 @@ namespace plaits {
 using namespace std;
 using namespace stmlib;
 
+inline float nrescale(float x, float xMin, float xMax, float yMin, float yMax) {
+	return yMin + (x - xMin) / (xMax - xMin) * (yMax - yMin);
+}
+
+
 void WavetableEngine::Init(BufferAllocator* allocator) {
   phase_ = 0.0f;
 
@@ -55,6 +60,12 @@ void WavetableEngine::Init(BufferAllocator* allocator) {
 
   diff_out_.Init();
   sin_osc_.Init();
+  std::mt19937 rng((size_t)this);
+  std::uniform_real_distribution<float> dist(0.0f,1.0f);
+  for (int i=0;i<32;++i)
+  {
+    auxRandTable_[i] = dist(rng);
+  }
 }
 
 void WavetableEngine::Reset() {
@@ -93,12 +104,8 @@ void WavetableEngine::Render(
     size_t size,
     bool* already_enveloped) {
   const float f0 = NoteToFrequency(parameters.note);
-  if (fabs(parameters.note-previousNote_)>=1.0)
-  {
-    previousNote_ = parameters.note;
-    std::uniform_int_distribution<short> dist(-32768,32767);
-    curRand_ = dist(randGen_);
-  }
+  
+  
   float f1 = f0; 
   float auxoscgain = 0.0f;
   const float auxParams[8][2] = {
@@ -111,7 +118,16 @@ void WavetableEngine::Render(
     {12.1f,0.5f},
     {0.0f,0.5f}
   };
+  short auxRand = 0;
+  
   int wsauxmode = parameters.wsauxmode;
+  if (wsauxmode == 7)
+  {
+    float tindex = nrescale(parameters.note,12.0,128.0f,0.0f,1.0f);
+    CONSTRAIN(tindex,0.0f,1.0f);
+    float interpRand = Interpolate(auxRandTable_,tindex,31);
+    auxRand = 16384.0f*interpRand;
+  }
   if (auxParams[wsauxmode][1]>0.0f)
   {
     f1 = NoteToFrequency(parameters.note+auxParams[wsauxmode][0]);
@@ -226,7 +242,7 @@ void WavetableEngine::Render(
       } else
       {
           short out_i = mix * 32768.0f;
-          *aux++ = ((out_i ^ curRand_) / 32768.0f);
+          *aux++ = ((out_i ^ auxRand) / 32768.0f);
       }
       
     }
