@@ -359,9 +359,16 @@ struct Palette : Module {
 					modulations[i].morph = inputs[MORPH_INPUT].getVoltage(i) / 10.f;
 				// Triggers at around 0.7 V
 				if (inputs[TRIGGER_INPUT].getChannels() < 2)
+				{
 					modulations[i].trigger = inputs[TRIGGER_INPUT].getVoltage() / 3.f;
+				}
 				else
-					modulations[i].trigger = inputs[TRIGGER_INPUT].getVoltage(i) / 3.f;
+				{
+					if (unispreadchans>1) // discard triggers in unispread mode above channel 1
+						modulations[i].trigger = inputs[TRIGGER_INPUT].getVoltage() / 3.f;
+					else
+						modulations[i].trigger = inputs[TRIGGER_INPUT].getVoltage(i) / 3.f;
+				}
 				if (inputs[LEVEL_INPUT].getChannels() < 2)
 					modulations[i].level = inputs[LEVEL_INPUT].getVoltage() / 8.f;
 				else
