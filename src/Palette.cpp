@@ -370,9 +370,16 @@ struct Palette : Module {
 						modulations[i].trigger = inputs[TRIGGER_INPUT].getVoltage(i) / 3.f;
 				}
 				if (inputs[LEVEL_INPUT].getChannels() < 2)
+				{
 					modulations[i].level = inputs[LEVEL_INPUT].getVoltage() / 8.f;
+				}
 				else
-					modulations[i].level = inputs[LEVEL_INPUT].getVoltage(i) / 8.f;
+				{
+					if (unispreadchans>1)
+						modulations[i].level = inputs[LEVEL_INPUT].getVoltage() / 8.f;
+					else
+						modulations[i].level = inputs[LEVEL_INPUT].getVoltage(i) / 8.f;
+				}
 
 				modulations[i].frequency_patched = inputs[FREQ_INPUT].isConnected();
 				modulations[i].timbre_patched = inputs[TIMBRE_INPUT].isConnected();
