@@ -88,6 +88,7 @@ struct Palette : Module {
 	bool lowCpu = false;
 	bool freeTune = false;
 	bool showModulations = true;
+	bool lfoMode = false;
 	dsp::SchmittTrigger model1Trigger;
 	dsp::SchmittTrigger model2Trigger;
 
@@ -142,6 +143,7 @@ struct Palette : Module {
 			patch[i].decay = 0.5f;
 		}
 		lpg_mode = 0;
+		lfoMode = false;
 		freeTune = false;
 	}
 
@@ -158,7 +160,8 @@ struct Palette : Module {
 		json_object_set_new(rootJ, "model", json_integer(patch[0].engine));
 		json_object_set_new(rootJ, "lpgColor", json_real(patch[0].lpg_colour));
 		json_object_set_new(rootJ, "decay", json_real(patch[0].decay));
-		json_object_set_new(rootJ, "freetune", json_boolean(freeTune));
+		json_object_set_new(rootJ, "freetune", json_boolean(freeTune)); 
+		json_object_set_new(rootJ, "lfoMode", json_boolean(lfoMode)); 
 		json_object_set_new(rootJ, "showmods", json_boolean(showModulations));
 		json_object_set_new(rootJ, "lpgMode", json_integer(lpg_mode));
 		return rootJ;
@@ -172,6 +175,10 @@ struct Palette : Module {
 		json_t *freetuneJ = json_object_get(rootJ, "freetune");
 		if (freetuneJ)
 			freeTune = json_boolean_value(freetuneJ);
+		
+		json_t *lfoModeJ = json_object_get(rootJ, "lfoMode");
+		if (lfoModeJ)
+			lfoMode = json_boolean_value(lfoModeJ);
 
 		json_t *showmodJ = json_object_get(rootJ, "showmods");
 		if (showmodJ)
@@ -294,7 +301,10 @@ struct Palette : Module {
 			for (int i=0;i<numpolychs;++i)
 			{
 				voice[i].lpg_behavior = (plaits::Voice::LPGBehavior)lpg_mode;
-				patch[i].note = 60.f + pitch * 12.f + pitchAdjust;
+				if (!lfoMode)
+					patch[i].note = 60.f + pitch * 12.f + pitchAdjust;
+				else
+					patch[i].note = -48.37f + pitch * 12.f + pitchAdjust;
 				if (unispreadchans>1)
 					patch[i].note+=getUniSpreadAmount(unispreadchans,i,spreadamt);
 				patch[i].harmonics = params[HARMONICS_PARAM].getValue();
@@ -755,6 +765,13 @@ struct PaletteWidget : ModuleWidget {
 			}
 		};
 
+		struct PlaitsLFOModeItem : MenuItem {
+			Palette *module;
+			void onAction(const event::Action &e) override {
+				module->lfoMode ^= true;
+			}
+		};
+
 		struct PlaitsModelItem : MenuItem {
 			Palette *module;
 			int model;
@@ -776,6 +793,11 @@ struct PaletteWidget : ModuleWidget {
 			= createMenuItem<PlaitsShowModulationsItem>("Show modulation amounts on knobs", CHECKMARK(module->showModulations));
 		showModsItem->module = module;
 		menu->addChild(showModsItem);
+
+		PlaitsLFOModeItem *lfoModeItem 
+			= createMenuItem<PlaitsLFOModeItem>("LFO Mode", CHECKMARK(module->lfoMode));
+		lfoModeItem->module = module;
+		menu->addChild(lfoModeItem);
 
 		LPGMenuItems* lpg_items = createMenuItem<LPGMenuItems>("LPG mode",RIGHT_ARROW);
 		lpg_items->module = module;
