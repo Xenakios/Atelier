@@ -96,7 +96,7 @@ struct Palette : Module {
 	float currentPitch = 0.0f;
 
 	int curNumVoices = 0;
-	
+	int curResamplingQ = 4;
 	Palette() {
 		config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS);
 		configParam(MODEL1_PARAM, 0.0, 1.0, 0.0, "Model selection 1");
@@ -131,7 +131,7 @@ struct Palette : Module {
 			memset(shared_buffer[i],0,sizeof(shared_buffer[i]));
 			stmlib::BufferAllocator allocator(shared_buffer[i], sizeof(shared_buffer[i]));
 			voice[i].Init(&allocator);
-			outputSrc[i].setQuality(4);
+			outputSrc[i].setQuality(curResamplingQ);
 		}
 		onReset();
 	}
@@ -149,7 +149,22 @@ struct Palette : Module {
 		lpg_mode = 0;
 		freeTune = false;
 	}
-
+	int getResamplingQuality()
+	{
+		if (lowCpu)
+			return -1;
+		return curResamplingQ;
+	}
+	void setResamplingQuality(int qu)
+	{
+		if (qu == -1)
+		{
+			lowCpu = true;
+			return;
+		}
+		lowCpu = false;
+		curResamplingQ = qu;
+	}
 	void onRandomize() override {
 		int engineindex = random::u32() % 16;
 		for (int i=0;i<MAX_PALETTE_VOICES;++i)
@@ -262,6 +277,13 @@ struct Palette : Module {
 		curNumVoices = numpolychs;
 		if (outputBuffer[0].empty()) {
 			const int blockSize = 12;
+			if (curResamplingQ!=outputSrc[0].quality)
+			{
+				for (int i=0;i<numpolychs;++i)
+				{
+					outputSrc[i].setQuality(curResamplingQ);
+				}
+			}
 			float pitchAdjust = params[SECONDARY_FREQ_PARAM].getValue();
 			// Model buttons
 			if (model1Trigger.process(params[MODEL1_PARAM].getValue())) {
@@ -793,15 +815,60 @@ struct PaletteWidget : ModuleWidget {
 				module->lowCpu ^= true;
 			}
 		};
-		
+		struct ResamplerQItem : MenuItem
+		{
+			Palette* module = nullptr;
+			int rsq = 0;
+			void onAction(const event::Action &e) override {
+				module->setResamplingQuality(rsq);
+			}
+		};
+
+		struct ResamplerQMenu : MenuItem
+		{
+			Palette* module = nullptr;
+			Menu *createChildMenu() override 
+			{
+				Menu *submenu = new Menu();
+				std::string modetexts[12] =
+				{
+					"Resampling disabled (Classic Low CPU mode)",
+					"0 (Lowest quality)",
+					"1",
+					"2",
+					"3",
+					"4 (Default quality)",
+					"5",
+					"6",
+					"7",
+					"8",
+					"9",
+					"10 (Highest quality, most CPU use)"
+				};
+				for (int i=0;i<12;++i)
+				{
+					bool checked = (i-1) == module->getResamplingQuality();
+					
+					auto menuItem = createMenuItem<ResamplerQItem>(modetexts[i], CHECKMARK(checked));
+					menuItem->module = module;
+					menuItem->rsq = i-1;
+					submenu->addChild(menuItem);
+				}
+				
+				
+				return submenu;
+			}
+		};
+
+
 		struct WaveShaperAuxModeItem : MenuItem {
-			Palette *module;
+			Palette *module = nullptr;
 			int newMode = 0;
 			void onAction(const event::Action &e) override {
 				module->params[Palette::WAVETABLE_AUX_MODE].setValue(newMode);
 			}
 		};
-
+		
 		struct WaveShaperSubMenu : MenuItem
 		{
 			Palette* module = nullptr;
@@ -859,6 +926,16 @@ struct PaletteWidget : ModuleWidget {
 		PlaitsLowCpuItem *lowCpuItem = createMenuItem<PlaitsLowCpuItem>("Low CPU", CHECKMARK(module->lowCpu));
 		lowCpuItem->module = module;
 		menu->addChild(lowCpuItem);
+		
+		if (std::fabs(APP->engine->getSampleRate()-48000.0f)>1.0f)
+		{
+			ResamplerQMenu *rqMode = createMenuItem<ResamplerQMenu>("Resampling quality", RIGHT_ARROW);
+			rqMode->module = module;
+			menu->addChild(rqMode);
+		}
+		
+		
+		
 		PlaitsFreeTuneItem *freeTuneItem = createMenuItem<PlaitsFreeTuneItem>("Octave knob free tune", CHECKMARK(module->freeTune));
 		freeTuneItem->module = module;
 		menu->addChild(freeTuneItem);
@@ -868,7 +945,6 @@ struct PaletteWidget : ModuleWidget {
 		showModsItem->module = module;
 		menu->addChild(showModsItem);
 
-		// WaveShaperAuxModeItem
 		WaveShaperSubMenu *auxMode 
 		= createMenuItem<WaveShaperSubMenu>("Aux output mode for Wave Table engine", 
 			RIGHT_ARROW);
