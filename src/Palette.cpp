@@ -174,7 +174,7 @@ struct Palette : Module {
 	json_t *dataToJson() override {
 		json_t *rootJ = json_object();
 
-		json_object_set_new(rootJ, "lowCpu", json_boolean(lowCpu));
+		json_object_set_new(rootJ, "rsqual", json_integer(getResamplingQuality()));
 		json_object_set_new(rootJ, "model", json_integer(patch[0].engine));
 		json_object_set_new(rootJ, "lpgColor", json_real(patch[0].lpg_colour));
 		json_object_set_new(rootJ, "decay", json_real(patch[0].decay));
@@ -187,8 +187,16 @@ struct Palette : Module {
 	void dataFromJson(json_t *rootJ) override {
 		json_t *lowCpuJ = json_object_get(rootJ, "lowCpu");
 		if (lowCpuJ)
-			lowCpu = json_boolean_value(lowCpuJ);
-
+		{
+			bool lowCpuTemp = json_boolean_value(lowCpuJ);
+			if (lowCpuTemp == true)
+			{
+				setResamplingQuality(-1);
+			}
+		}
+		json_t *rsQualJ = json_object_get(rootJ,"rsqual");
+		if (rsQualJ)
+			setResamplingQuality(json_integer_value(rsQualJ));
 		json_t *freetuneJ = json_object_get(rootJ, "freetune");
 		if (freetuneJ)
 			freeTune = json_boolean_value(freetuneJ);
@@ -809,12 +817,6 @@ struct PaletteWidget : ModuleWidget {
 			}
 		};
 		
-		struct PlaitsLowCpuItem : MenuItem {
-			Palette *module;
-			void onAction(const event::Action &e) override {
-				module->lowCpu ^= true;
-			}
-		};
 		struct ResamplerQItem : MenuItem
 		{
 			Palette* module = nullptr;
@@ -923,11 +925,8 @@ struct PaletteWidget : ModuleWidget {
 		};
 
 		menu->addChild(new MenuEntry);
-		PlaitsLowCpuItem *lowCpuItem = createMenuItem<PlaitsLowCpuItem>("Low CPU", CHECKMARK(module->lowCpu));
-		lowCpuItem->module = module;
-		menu->addChild(lowCpuItem);
 		
-		if (std::fabs(APP->engine->getSampleRate()-48000.0f)>1.0f)
+		if (isNear(APP->engine->getSampleRate(),48000.0f,1.0f))
 		{
 			ResamplerQMenu *rqMode = createMenuItem<ResamplerQMenu>("Resampling quality", RIGHT_ARROW);
 			rqMode->module = module;
