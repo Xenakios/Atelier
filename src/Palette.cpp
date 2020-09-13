@@ -936,7 +936,7 @@ struct PaletteWidget : ModuleWidget {
 
 		menu->addChild(new MenuEntry);
 		
-		if (isNear(APP->engine->getSampleRate(),48000.0f,1.0f))
+		if (!isNear(APP->engine->getSampleRate(),48000.0f,1.0f))
 		{
 			ResamplerQMenu *rqMode = createMenuItem<ResamplerQMenu>("Resampling quality", RIGHT_ARROW);
 			rqMode->module = module;
