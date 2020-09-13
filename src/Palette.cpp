@@ -1,5 +1,8 @@
 //#include "AudibleInstruments.hpp"
 #include "plugin.hpp"
+
+#include <sys/stat.h>
+
 #pragma GCC diagnostic push
 #ifndef __clang__
 #pragma GCC diagnostic ignored "-Wsuggest-override"
@@ -776,9 +779,14 @@ struct PaletteWidget : ModuleWidget {
 		addParam(createParamCentered<PaletteKnobSmall>(Vec(252,76), module, Palette::UNISONOSPREAD_CV_PARAM));
 		addInput(createInputCentered<MyPort1>(Vec(252,98), module, Palette::SPREAD_INPUT));
 		
-		wtmodeKnob = createParamCentered<PaletteKnobSmall>(Vec(167,327), module, Palette::WAVETABLE_AUX_MODE);
-		wtmodeKnob->snap = true;
-		addParam(wtmodeKnob);
+		std::string optfile(asset::plugin(pluginInstance, "res/palette/show_wavetable_extra_knob.txt"));
+		struct stat buffer;   
+  		if (stat (optfile.c_str(), &buffer) == 0)
+		{
+			wtmodeKnob = createParamCentered<PaletteKnobSmall>(Vec(167,327), module, Palette::WAVETABLE_AUX_MODE);
+			wtmodeKnob->snap = true;
+			addParam(wtmodeKnob);	
+		}
 
 		Model_LEDWidget* ledwid = new Model_LEDWidget(module);
 		ledwid->box = {{0,0},{box.size}};
