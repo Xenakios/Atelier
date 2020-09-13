@@ -629,6 +629,8 @@ struct Model_LEDWidget : public TransparentWidget
 	{
 		if (e.action!=GLFW_PRESS)
 			return;
+		if (e.button != GLFW_MOUSE_BUTTON_LEFT)
+			return;
 		int engineBank = mPalette->patch[0].engine / 8;
 		for (int i=0;i<8;++i)
 		{
