@@ -1,6 +1,6 @@
 # 1.0.4
 
-- Palette : Polyphonic handling of output mix cv input
+- Palette : Polyphonic handling of output mix cv input and decay envelope
 
 # 1.0.3
 
