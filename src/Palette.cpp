@@ -95,7 +95,7 @@ struct Palette : Module {
 	dsp::SchmittTrigger model1Trigger;
 	dsp::SchmittTrigger model2Trigger;
 
-	float currentOutmix = 0.0f;
+	float currentOutmix[16];
 	float currentPitch = 0.0f;
 
 	int curNumVoices = 0;
@@ -135,6 +135,7 @@ struct Palette : Module {
 			stmlib::BufferAllocator allocator(shared_buffer[i], sizeof(shared_buffer[i]));
 			voice[i].Init(&allocator);
 			outputSrc[i].setQuality(curResamplingQ);
+			currentOutmix[i]=0.0f;
 		}
 		onReset();
 	}
@@ -240,9 +241,9 @@ struct Palette : Module {
 				return voice[whichvoice].epars.morph;
 			if (paramid==TIMBRE_PARAM)
 				return voice[whichvoice].epars.timbre;
+			if (paramid==OUTMIX_PARAM)
+				return currentOutmix[whichvoice];
 		}
-		if (paramid==OUTMIX_PARAM && whichvoice == 0)
-			return currentOutmix;
 		return -1.0f;
 	}
 	inline float getUniSpreadAmount(int numchans, int chan, float spreadpar)
@@ -456,14 +457,15 @@ struct Palette : Module {
 		outputs[AUX2_OUTPUT].setChannels(numpolychs);
 		
 		// Set output
-		float outmix = params[OUTMIX_PARAM].getValue();
-		outmix += rescale(inputs[OUTMIX_INPUT].getVoltage()*params[OUTMIX_CV_PARAM].getValue(),
-			-5.0f,5.0f,-0.5f,0.5f);
-		outmix += voice[0].getDecayEnvelopeValue()*params[OUTMIX_LPG_PARAM].getValue();
-		outmix = clamp(outmix,0.0f,1.0f);
-		currentOutmix = outmix;
+		float outmixbase = params[OUTMIX_PARAM].getValue();
 		for (int i=0;i<numpolychs;++i)
 		{
+			float outmix = outmixbase;
+			outmix += rescale(inputs[OUTMIX_INPUT].getVoltage(i)*params[OUTMIX_CV_PARAM].getValue(),
+			-5.0f,5.0f,-0.5f,0.5f);
+			outmix += voice[i].getDecayEnvelopeValue()*params[OUTMIX_LPG_PARAM].getValue();
+			outmix = clamp(outmix,0.0f,1.0f);
+			currentOutmix[i] = outmix;
 			if (!outputBuffer[i].empty()) {
 				dsp::Frame<2> outputFrame = outputBuffer[i].shift();
 				// Inverting op-amp on outputs

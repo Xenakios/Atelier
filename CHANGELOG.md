@@ -1,3 +1,7 @@
+# 1.0.4
+
+- Palette : Polyphonic handling of output mix cv input
+
 # 1.0.3
 
 - Palette : Fixes to polyphonic behavior when in unisono/spread mode.
