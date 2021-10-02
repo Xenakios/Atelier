@@ -603,6 +603,7 @@ struct Model_LEDWidget : public TransparentWidget
 		int baseEngineIndex = mPalette->patch[0].engine;
 		int baseEngineBank = baseEngineIndex / 8;
 		int numVoices = mPalette->curNumVoices;
+		nvgGlobalTint(args.vg, color::WHITE);
 		for (int i=0;i<8;++i)
 		{
 			nvgBeginPath(args.vg);
