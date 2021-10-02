@@ -120,6 +120,7 @@ struct Palette : Module {
 		configParam(HARMONICS_CV_PARAM, -1.0, 1.0, 0.0, "Harmonics CV");
 		configParam(HARMONICS_LPG_PARAM, -1.0, 1.0, 0.0, "LPG to Harmonics");
 		configParam(UNISONOMODE_PARAM, 1.0, 16.0, 1.0, "Unisono/Spread num voices");
+		paramQuantities[UNISONOMODE_PARAM]->snapEnabled = true;
 		configParam(UNISONOSPREAD_PARAM, 0.0, 1.0, 0.05, "Unisono/Spread");
 		configParam(OUTMIX_CV_PARAM, -1.0, 1.0, 0.0, "Output mix CV");
 		configParam(OUTMIX_LPG_PARAM, -1.0, 1.0, 0.0, "Output mix LPG");
@@ -518,7 +519,7 @@ struct PaletteKnobLarge : app::SvgKnob {
 		if (modul)
 		{
 			if (getParamQuantity()->paramId == Palette::FREQ_PARAM)
-				this->snap = !modul->freeTune;
+				getParamQuantity()->snapEnabled = !modul->freeTune;
 			if (modul->showModulations==false)
 				return;
 			static const NVGcolor colors[5]=
@@ -759,7 +760,6 @@ struct PaletteWidget : ModuleWidget {
 		addParam(createParamCentered<PaletteKnobSmall>(Vec(199.5,300), module, Palette::LPG_DECAY_PARAM));
 
 		auto uvoicesknob = createParamCentered<PaletteKnobSmall>(Vec(40,44), module, Palette::UNISONOMODE_PARAM);
-		uvoicesknob->snap = true;
 		addParam(uvoicesknob);
 		addParam(createParamCentered<PaletteKnobSmall>(Vec(230,44), module, Palette::UNISONOSPREAD_PARAM));
 		
