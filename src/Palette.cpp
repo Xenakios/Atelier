@@ -509,12 +509,12 @@ struct PaletteKnobLarge : app::SvgKnob {
 	void draw(const DrawArgs& args) override
     {
         app::SvgKnob::draw(args);
-        if (this->paramQuantity==nullptr)
+        if (this->getParamQuantity()==nullptr)
 			return;
-		auto modul = dynamic_cast<Palette*>(this->paramQuantity->module);
+		auto modul = dynamic_cast<Palette*>(this->getParamQuantity()->module);
 		if (modul)
 		{
-			if (paramQuantity->paramId == Palette::FREQ_PARAM)
+			if (getParamQuantity()->paramId == Palette::FREQ_PARAM)
 				this->snap = !modul->freeTune;
 			if (modul->showModulations==false)
 				return;
@@ -529,7 +529,7 @@ struct PaletteKnobLarge : app::SvgKnob {
 			NVGRestorer rs(args.vg);
 			for (int i=0;i<16;++i)
 			{
-				float modulated = modul->getModulatedParamNormalized(this->paramQuantity->paramId,i);
+				float modulated = modul->getModulatedParamNormalized(this->getParamQuantity()->paramId,i);
 				if (modulated>=0.0f)
 				{
 					float angle = rescale(modulated,0.0f,1.0f,this->minAngle,this->maxAngle)-1.5708;
@@ -980,7 +980,7 @@ struct PaletteWidget : ModuleWidget {
 	int curSubPanel = 0;
 	SvgWidget* swgWidget = nullptr;
 };
-
+#ifdef PALETTE_ZEROMEM_TEST
 template <class TModule, class TModuleWidget>
 plugin::Model* createModelTest(const std::string& slug) {
 	struct TModel : plugin::Model {
@@ -1011,5 +1011,6 @@ plugin::Model* createModelTest(const std::string& slug) {
 	o->slug = slug;
 	return o;
 }
+#endif
 
 Model *modelPalette = createModel<Palette, PaletteWidget>("AtelierPalette");
