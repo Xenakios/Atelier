@@ -129,6 +129,9 @@ struct Palette : Module {
 		configParam(UNISONOSPREAD_CV_PARAM, -1.0, 1.0, 0.0, "Unisono/Spread CV");
 		configParam(SECONDARY_FREQ_PARAM, -7.0, 7.0, 0.0, "Tuning");
 		configParam(WAVETABLE_AUX_MODE, 0.0, 7.0, 0.0, "Wavetable Aux output mode");
+		configOutput(AUX2_OUTPUT, "Mixed audio");
+		configInput(ENGINE_INPUT,"Engine choice CV");
+		configInput(TIMBRE_INPUT,"Timbre CV");
 		for (int i=0;i<MAX_PALETTE_VOICES;++i)
 		{
 			memset(shared_buffer[i],0,sizeof(shared_buffer[i]));
