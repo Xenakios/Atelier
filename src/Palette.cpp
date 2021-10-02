@@ -530,6 +530,7 @@ struct PaletteKnobLarge : app::SvgKnob {
 				nvgRGBA(0x00, 0xee, 0xee, 0xff),
 			};
 			NVGRestorer rs(args.vg);
+			nvgGlobalTint(args.vg, color::WHITE);
 			for (int i=0;i<16;++i)
 			{
 				float modulated = modul->getModulatedParamNormalized(this->getParamQuantity()->paramId,i);
