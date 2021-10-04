@@ -346,7 +346,6 @@ struct Palette : Module {
 			{
 				voice[i].wsAuxMode = params[WAVETABLE_AUX_MODE].getValue();
 				voice[i].lpg_behavior = (plaits::Voice::LPGBehavior)lpg_mode;
-				patch[i].note = 60.f + pitch * 12.f + pitchAdjust;
 				if (!lfoMode)
 					patch[i].note = 60.f + pitch * 12.f + pitchAdjust;
 				else
