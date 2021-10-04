@@ -112,19 +112,19 @@ struct Palette : Module {
 		configParam(TIMBRE_CV_PARAM, -1.0, 1.0, 0.0, "Timbre CV");
 		configParam(FREQ_CV_PARAM, -1.0, 1.0, 0.0, "Frequency CV");
 		configParam(MORPH_CV_PARAM, -1.0, 1.0, 0.0, "Morph CV");
-		configParam(TIMBRE_LPG_PARAM, -1.0, 1.0, 0.0, "LPG to Timbre");
-		configParam(MORPH_LPG_PARAM, -1.0, 1.0, 0.0, "LPG to Morph");
-		configParam(FREQ_LPG_PARAM, -1.0, 1.0, 0.0, "LPG to Frequency");
+		configParam(TIMBRE_LPG_PARAM, -1.0, 1.0, 0.0, "Internal AD envelope to Timbre amount");
+		configParam(MORPH_LPG_PARAM, -1.0, 1.0, 0.0, "Internal AD envelope to Morph amount");
+		configParam(FREQ_LPG_PARAM, -1.0, 1.0, 0.0, "Internal AD envelope to Frequency amount");
 		configParam(LPG_COLOR_PARAM, 0.0, 1.0, 0.5, "LPG Colour");
-		configParam(LPG_DECAY_PARAM, 0.0, 1.0, 0.5, "LPG Decay");
+		configParam(LPG_DECAY_PARAM, 0.0, 1.0, 0.5, "LPG/Internal envelope Decay");
 		configParam(OUTMIX_PARAM, 0.0, 1.0, 0.5, "Output mix");
 		configParam(HARMONICS_CV_PARAM, -1.0, 1.0, 0.0, "Harmonics CV");
-		configParam(HARMONICS_LPG_PARAM, -1.0, 1.0, 0.0, "LPG to Harmonics");
+		configParam(HARMONICS_LPG_PARAM, -1.0, 1.0, 0.0, "Internal AD envelope to Harmonics amount");
 		configParam(UNISONOMODE_PARAM, 1.0, 16.0, 1.0, "Unisono/Spread num voices");
 		paramQuantities[UNISONOMODE_PARAM]->snapEnabled = true;
 		configParam(UNISONOSPREAD_PARAM, 0.0, 1.0, 0.05, "Unisono/Spread");
 		configParam(OUTMIX_CV_PARAM, -1.0, 1.0, 0.0, "Output mix CV");
-		configParam(OUTMIX_LPG_PARAM, -1.0, 1.0, 0.0, "Output mix LPG");
+		configParam(OUTMIX_LPG_PARAM, -1.0, 1.0, 0.0, "Internal AD envelope to Output mix amount");
 		configParam(DECAY_CV_PARAM, -1.0, 1.0, 0.0, "Decay CV");
 		configParam(LPG_COLOR_CV_PARAM, -1.0, 1.0, 0.0, "LPG Colour CV");
 		configParam(ENGINE_CV_PARAM, -1.0, 1.0, 0.0, "Engine choice CV");
@@ -132,8 +132,13 @@ struct Palette : Module {
 		configParam(SECONDARY_FREQ_PARAM, -7.0, 7.0, 0.0, "Tuning");
 		configParam(WAVETABLE_AUX_MODE, 0.0, 7.0, 0.0, "Wavetable Aux output mode");
 		configOutput(AUX2_OUTPUT, "Mixed audio");
+		configOutput(OUT_OUTPUT,"Primary audio");
+		configOutput(AUX_OUTPUT,"Secondary audio");
 		configInput(ENGINE_INPUT,"Engine choice CV");
 		configInput(TIMBRE_INPUT,"Timbre CV");
+		configInput(SPREAD_INPUT,"Spread CV");
+		configInput(TRIGGER_INPUT,"LPG/Internal envelope trigger");
+		configInput(NOTE_INPUT,"Pitch (1V/Oct)");
 		for (int i=0;i<MAX_PALETTE_VOICES;++i)
 		{
 			memset(shared_buffer[i],0,sizeof(shared_buffer[i]));
