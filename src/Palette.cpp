@@ -134,11 +134,18 @@ struct Palette : Module {
 		configOutput(AUX2_OUTPUT, "Mixed audio");
 		configOutput(OUT_OUTPUT,"Primary audio");
 		configOutput(AUX_OUTPUT,"Secondary audio");
+		
 		configInput(ENGINE_INPUT,"Engine choice CV");
 		configInput(TIMBRE_INPUT,"Timbre CV");
+		configInput(TIMBRE_INPUT,"Timbre CV");
+		configInput(HARMONICS_INPUT,"Harmonics CV");
+		configInput(OUTMIX_INPUT,"Output Mix CV");
 		configInput(SPREAD_INPUT,"Spread CV");
 		configInput(TRIGGER_INPUT,"LPG/Internal envelope trigger");
 		configInput(NOTE_INPUT,"Pitch (1V/Oct)");
+		configInput(FREQ_INPUT,"FM");
+		configInput(LEVEL_INPUT,"Level CV");
+		configInput(ENGINE_INPUT,"Engine CV");
 		for (int i=0;i<MAX_PALETTE_VOICES;++i)
 		{
 			memset(shared_buffer[i],0,sizeof(shared_buffer[i]));
