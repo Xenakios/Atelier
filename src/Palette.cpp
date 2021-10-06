@@ -137,7 +137,7 @@ struct Palette : Module {
 		
 		configInput(ENGINE_INPUT,"Engine choice CV");
 		configInput(TIMBRE_INPUT,"Timbre CV");
-		configInput(TIMBRE_INPUT,"Timbre CV");
+		configInput(MORPH_INPUT,"Morph CV");
 		configInput(HARMONICS_INPUT,"Harmonics CV");
 		configInput(OUTMIX_INPUT,"Output Mix CV");
 		configInput(SPREAD_INPUT,"Spread CV");
@@ -146,6 +146,9 @@ struct Palette : Module {
 		configInput(FREQ_INPUT,"FM");
 		configInput(LEVEL_INPUT,"Level CV");
 		configInput(ENGINE_INPUT,"Engine CV");
+		configInput(LPG_DECAY_INPUT,"LPG/Internal envelope decay CV");
+		configInput(LPG_COLOR_INPUT,"LPG Color CV");
+
 		for (int i=0;i<MAX_PALETTE_VOICES;++i)
 		{
 			memset(shared_buffer[i],0,sizeof(shared_buffer[i]));
