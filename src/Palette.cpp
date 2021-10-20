@@ -613,6 +613,14 @@ struct Model_LEDWidget : public TransparentWidget
 	{
 		mPalette = m;
 	}
+	void drawLayer(const DrawArgs& args, int layer) override
+	{
+		if (layer == 1 && mPalette)
+		{
+
+		}
+		Widget::drawLayer(args,layer);
+	}
 	void draw(const DrawArgs& args) override
 	{
 		if (mPalette==nullptr)
@@ -628,7 +636,7 @@ struct Model_LEDWidget : public TransparentWidget
 		int baseEngineIndex = mPalette->patch[0].engine;
 		int baseEngineBank = baseEngineIndex / 8;
 		int numVoices = mPalette->curNumVoices;
-		nvgGlobalTint(args.vg, color::WHITE);
+		//nvgGlobalTint(args.vg, color::WHITE);
 		for (int i=0;i<8;++i)
 		{
 			nvgBeginPath(args.vg);
