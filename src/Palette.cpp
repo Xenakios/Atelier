@@ -617,7 +617,40 @@ struct Model_LEDWidget : public TransparentWidget
 	{
 		if (layer == 1 && mPalette)
 		{
-
+			NVGRestorer nr(args.vg);
+			static const NVGcolor inactive = nvgRGBA(0x00,0x00,0x00,0xff);
+			static const NVGcolor active = nvgRGBA(0x84,0x84,0x84,0xff);
+			static const NVGcolor modulatedCols[2] = {nvgRGBA(0x00,0xB5,0x91,0xff),
+				nvgRGBA(0xEA,0x55,0x4E,0xff)};
+			int baseEngineIndex = mPalette->patch[0].engine;
+			int baseEngineBank = baseEngineIndex / 8;
+			int numVoices = mPalette->curNumVoices;
+			for (int i=0;i<8;++i)
+			{
+				nvgBeginPath(args.vg);
+				if ((baseEngineIndex % 8) == i)
+					nvgFillColor(args.vg,active);
+				else nvgFillColor(args.vg,inactive);
+				nvgEllipse(args.vg,positions[i][0],positions[i][1],3.5f,3.5f);
+				nvgFill(args.vg);
+			}
+			//if (mPalette->inputs[Palette::ENGINE_INPUT].isConnected())
+			{
+				for (int i=0;i<numVoices;++i)
+				{
+					int modelIndex = mPalette->voice[i].active_engine();
+					//if (modelIndex == baseEngineIndex)
+					//	continue;
+					int bank = modelIndex / 8;
+					nvgBeginPath(args.vg);
+					nvgFillColor(args.vg,modulatedCols[bank]);
+					
+					modelIndex = modelIndex % 8;
+					nvgEllipse(args.vg,positions[modelIndex][0],positions[modelIndex][1],1.5f,1.5f);
+					
+					nvgFill(args.vg);
+				}
+			}
 		}
 		Widget::drawLayer(args,layer);
 	}
@@ -625,44 +658,7 @@ struct Model_LEDWidget : public TransparentWidget
 	{
 		if (mPalette==nullptr)
 			return;
-		NVGRestorer nr(args.vg);
-		static const NVGcolor inactive = nvgRGBA(0x00,0x00,0x00,0xff);
-		static const NVGcolor active = nvgRGBA(0x84,0x84,0x84,0xff);
-		// 00B591
-		// EA554E
-		static const NVGcolor modulatedCols[2] = {nvgRGBA(0x00,0xB5,0x91,0xff),
-			nvgRGBA(0xEA,0x55,0x4E,0xff)};
 		
-		int baseEngineIndex = mPalette->patch[0].engine;
-		int baseEngineBank = baseEngineIndex / 8;
-		int numVoices = mPalette->curNumVoices;
-		//nvgGlobalTint(args.vg, color::WHITE);
-		for (int i=0;i<8;++i)
-		{
-			nvgBeginPath(args.vg);
-			if ((baseEngineIndex % 8) == i)
-				nvgFillColor(args.vg,active);
-			else nvgFillColor(args.vg,inactive);
-			nvgEllipse(args.vg,positions[i][0],positions[i][1],3.5f,3.5f);
-			nvgFill(args.vg);
-		}
-		//if (mPalette->inputs[Palette::ENGINE_INPUT].isConnected())
-		{
-			for (int i=0;i<numVoices;++i)
-			{
-				int modelIndex = mPalette->voice[i].active_engine();
-				//if (modelIndex == baseEngineIndex)
-				//	continue;
-				int bank = modelIndex / 8;
-				nvgBeginPath(args.vg);
-				nvgFillColor(args.vg,modulatedCols[bank]);
-				
-				modelIndex = modelIndex % 8;
-				nvgEllipse(args.vg,positions[modelIndex][0],positions[modelIndex][1],1.5f,1.5f);
-				
-				nvgFill(args.vg);
-			}
-		}
 	}
 	void onButton(const event::Button& e) override
 	{
