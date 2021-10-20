@@ -533,13 +533,15 @@ struct PaletteKnobLarge : app::SvgKnob {
 		maxAngle = 0.78 * M_PI;
 		setSvg(APP->window->loadSvg(asset::plugin(pluginInstance, "res/palette/palette_knobL.svg")));
 	}
-	void draw(const DrawArgs& args) override
-    {
-        app::SvgKnob::draw(args);
-        if (this->getParamQuantity()==nullptr)
+	void drawLayer(const DrawArgs& args, int layer) override
+	{
+		if (this->getParamQuantity()==nullptr)
+		{
+			Widget::drawLayer(args,layer);
 			return;
+		}
 		auto modul = dynamic_cast<Palette*>(this->getParamQuantity()->module);
-		if (modul)
+		if (modul && layer == 1)
 		{
 			if (getParamQuantity()->paramId == Palette::FREQ_PARAM)
 				getParamQuantity()->snapEnabled = !modul->freeTune;
@@ -554,7 +556,6 @@ struct PaletteKnobLarge : app::SvgKnob {
 				nvgRGBA(0x00, 0xee, 0xee, 0xff),
 			};
 			NVGRestorer rs(args.vg);
-			nvgGlobalTint(args.vg, color::WHITE);
 			for (int i=0;i<16;++i)
 			{
 				float modulated = modul->getModulatedParamNormalized(this->getParamQuantity()->paramId,i);
@@ -580,7 +581,11 @@ struct PaletteKnobLarge : app::SvgKnob {
 				
 			}
 		}
-        
+		Widget::drawLayer(args,layer);
+	}
+	void draw(const DrawArgs& args) override
+    {
+        SvgKnob::draw(args);
     }
 };
 
