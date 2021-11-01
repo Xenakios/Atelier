@@ -274,6 +274,22 @@ struct Palette : Module {
 		return 0.0f;
 	}
 	void process(const ProcessArgs &args) override {
+		for (int i=0;i<inputs.size();++i)
+		{
+			if (inputs[i].isConnected())
+			{
+				for (int j=0;j<inputs[i].getChannels();++j)
+				{
+					float check = inputs[i].getVoltage(j);
+					if (std::isnan(check) || std::isinf(check))
+					{
+						inputs[i].setVoltage(0.0f,j);
+					}
+				}	
+			}
+			
+		}
+		
 		float spreadamt = params[UNISONOSPREAD_PARAM].getValue();
 		if (inputs[SPREAD_INPUT].isConnected())
 		{
