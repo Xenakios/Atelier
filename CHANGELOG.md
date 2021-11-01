@@ -1,3 +1,7 @@
+# 1.0.5
+
+- Palette : Filter bad floating point (NaN, Inf) CV input values.
+
 # 1.0.4
 
 - Palette : Polyphonic handling of output mix cv input and decay envelope
