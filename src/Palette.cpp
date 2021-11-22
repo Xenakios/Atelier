@@ -251,7 +251,7 @@ struct Palette : Module {
 		json_t *lpgModeJ = json_object_get(rootJ, "lpgMode");
 		if (lpgModeJ)
 			lpg_mode = json_integer_value(lpgModeJ);
-		json_t *wsAuxJ = json_object_get(rootJ, "wsAuxMode");
+		
 	}
 	float getModulatedParamNormalized(int paramid, int whichvoice=0)
 	{
@@ -699,25 +699,13 @@ struct Model_LEDWidget : public TransparentWidget
 
 struct PaletteWidget : ModuleWidget {
 	rack::FramebufferWidget* fbWidget = nullptr;
-	PaletteKnobSmall* wtmodeKnob = nullptr;
+	
 	void step() override
 	{
 		ModuleWidget::step();
 		auto plaits = dynamic_cast<Palette*>(module);
 		if (plaits)
 		{
-			if (wtmodeKnob!=nullptr)
-			{
-				if (plaits->patch->engine!=5)
-				{
-					wtmodeKnob->hide();
-				}
-				else
-				{
-					wtmodeKnob->show();
-				}
-			}
-			
 			if (plaits->patch->engine!=curSubPanel)
 			{
 				curSubPanel = plaits->patch->engine;
@@ -820,15 +808,6 @@ struct PaletteWidget : ModuleWidget {
 		addParam(createParamCentered<PaletteKnobSmall>(Vec(252,76), module, Palette::UNISONOSPREAD_CV_PARAM));
 		addInput(createInputCentered<MyPort1>(Vec(252,98), module, Palette::SPREAD_INPUT));
 		
-		std::string optfile(asset::plugin(pluginInstance, "res/palette/show_wavetable_extra_knob.txt"));
-		struct stat buffer;   
-  		if (stat (optfile.c_str(), &buffer) == 0)
-		{
-			wtmodeKnob = createParamCentered<PaletteKnobSmall>(Vec(167,327), module, Palette::WAVETABLE_AUX_MODE);
-			wtmodeKnob->snap = true;
-			addParam(wtmodeKnob);	
-		}
-
 		Model_LEDWidget* ledwid = new Model_LEDWidget(module);
 		ledwid->box = {{0,0},{box.size}};
 		addChild(ledwid);
