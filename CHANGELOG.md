@@ -1,3 +1,12 @@
+# 2.0.0
+
+- Palette : Initial Rack V2 version.
+- Added port labels
+- Renamed some parameters
+- Preliminary dark mode support for panel lights/modulation indicators
+- Added LFO mode option to context menu, contributed by Anlexmatos
+- Chords engine fix from falkTX
+
 # 1.0.4
 
 - Palette : Polyphonic handling of output mix cv input and decay envelope
