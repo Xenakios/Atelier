@@ -57,6 +57,7 @@ struct EngineParameters {
   float harmonics = 0.0f;
   float accent = 0.0f;
   int wsauxmode = 0;
+  int speechMode = -1;
 };
 
 struct PostProcessingSettings {

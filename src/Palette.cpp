@@ -129,7 +129,7 @@ struct Palette : Module {
 			std::string getLabel() override
 			{
 				Palette* module = reinterpret_cast<Palette*>(this->module);
-				if (module->voice[0].active_engine()==7)
+				if (module->voice[0].active_engine()==7 && module->voice[0].epars.speechMode>=0)
 				{
 					return "Speech speed";
 				}
@@ -142,7 +142,7 @@ struct Palette : Module {
 			std::string getLabel() override
 			{
 				Palette* module = reinterpret_cast<Palette*>(this->module);
-				if (module->voice[0].active_engine()==7)
+				if (module->voice[0].active_engine()==7 && module->voice[0].epars.speechMode>=0)
 				{
 					return "Speech intonation";
 				}
@@ -671,7 +671,7 @@ struct PaletteKnobSmall : app::SvgKnob {
 		if (pq && module)
 		{
 			if (module->voice[0].active_engine()==7 
-				&& module->params[Palette::HARMONICS_PARAM].getValue()>0.42f
+				&& module->voice[0].epars.speechMode>=0
 				&& (pq->paramId == Palette::MORPH_LPG_PARAM 
 				|| pq->paramId == Palette::FREQ_LPG_PARAM))
 			{

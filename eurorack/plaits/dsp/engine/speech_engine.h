@@ -58,7 +58,7 @@ class SpeechEngine : public Engine {
   inline void set_speed(float speed) {
     speed_ = speed;
   }
-
+  int currentWordBank = -1;
  private:
   stmlib::HysteresisQuantizer word_bank_quantizer_;
   

@@ -68,6 +68,7 @@ void SpeechEngine::Render(
   
   // Interpolates between the 3 models: naive, SAM, LPC.
   if (group <= 2.0f) {
+    currentWordBank = -1;
     *already_enveloped = false;
     
     float blend = group;
@@ -118,7 +119,7 @@ void SpeechEngine::Render(
     const int word_bank = word_bank_quantizer_.Process(
         (group - 2.0f) * 0.275f,
         LPC_SPEECH_SYNTH_NUM_WORD_BANKS + 1) - 1;
-    
+    currentWordBank = word_bank;
     const bool replay_prosody = word_bank >= 0 && \
         !(parameters.trigger & TRIGGER_UNPATCHED);
     

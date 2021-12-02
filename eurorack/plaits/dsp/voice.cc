@@ -260,6 +260,7 @@ void Voice::Render(
       &frames->aux,
       size,
       2);
+    p.speechMode = speech_engine_.currentWordBank;
     epars = p;
 }
 
