@@ -1,6 +1,6 @@
 # 2.0.1
 
-- Palette : Change relevant parameter tooltips when using Speech engine
+- Palette : Change relevant parameter tooltips and tint knobs when using Speech engine
 
 # 2.0.0
 
