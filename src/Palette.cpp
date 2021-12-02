@@ -621,6 +621,25 @@ struct PaletteKnobSmall : app::SvgKnob {
 		maxAngle = 0.83 * M_PI;
 		setSvg(APP->window->loadSvg(asset::plugin(pluginInstance, "res/palette/palette_knobS.svg")));
 	}
+	void draw(const DrawArgs& args) override
+	{
+		nvgSave(args.vg);
+		auto module = dynamic_cast<Palette*>(this->module);
+		auto pq = getParamQuantity();
+		if (pq && module)
+		{
+			if (module->voice[0].active_engine()==7 
+				&& (pq->paramId == Palette::MORPH_LPG_PARAM 
+				|| pq->paramId == Palette::FREQ_LPG_PARAM))
+			{
+				nvgTint(args.vg,nvgRGBA(0,255,0,255));
+			}
+			
+		}
+		
+		SvgKnob::draw(args);
+		nvgRestore(args.vg);
+	}
 };
 
 struct MyPort1 : app::SvgPort {
