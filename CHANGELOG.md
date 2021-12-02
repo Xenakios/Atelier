@@ -1,3 +1,7 @@
+# 2.0.1
+
+- Palette : Change parameter tooltips when using Speech engine
+
 # 2.0.0
 
 - Palette : Initial Rack V2 version.
