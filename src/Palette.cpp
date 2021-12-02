@@ -360,6 +360,7 @@ struct Palette : Module {
 		}
 		return 0.0f;
 	}
+	int currentAuxMode = 0;
 	void process(const ProcessArgs &args) override {
 		float spreadamt = params[UNISONOSPREAD_PARAM].getValue();
 		if (inputs[SPREAD_INPUT].isConnected())
@@ -424,10 +425,11 @@ struct Palette : Module {
 			if (inputs[ENGINE_INPUT].isConnected()==false)
 				auxMode = rescale(params[ENGINE_CV_PARAM].getValue(),-1.0f,1.0f,0.0,7.0);
 			else auxMode = params[WAVETABLE_AUX_MODE].getValue();
+			currentAuxMode = auxMode;
 			for (int i=0;i<numpolychs;++i)
 			{
 				
-				voice[i].wsAuxMode = auxMode; // params[WAVETABLE_AUX_MODE].getValue();
+				voice[i].wsAuxMode = auxMode; 
 				voice[i].lpg_behavior = (plaits::Voice::LPGBehavior)lpg_mode;
 				if (!lfoMode)
 					patch[i].note = 60.f + pitch * 12.f + pitchAdjust;
@@ -988,7 +990,16 @@ struct PaletteWidget : ModuleWidget {
 			Palette *module = nullptr;
 			int newMode = 0;
 			void onAction(const event::Action &e) override {
-				module->params[Palette::WAVETABLE_AUX_MODE].setValue(newMode);
+				if (module->voice[0].active_engine()==5 
+					&& module->inputs[Palette::ENGINE_INPUT].isConnected()==false)
+				{
+					float pv = rescale((float)newMode,0.0f,7.0f,-1.0f,1.0f);
+					module->params[Palette::ENGINE_CV_PARAM].setValue(pv);
+				} else
+				{
+					module->params[Palette::WAVETABLE_AUX_MODE].setValue(newMode);
+				}
+				
 			}
 		};
 		
@@ -1002,7 +1013,7 @@ struct PaletteWidget : ModuleWidget {
 				for (int i=0;i<8;++i)
 				{
 					auto menuItem = createMenuItem<WaveShaperAuxModeItem>(auxmodemenutexts[i], 
-						CHECKMARK((int)module->params[Palette::WAVETABLE_AUX_MODE].getValue()==i));
+						CHECKMARK(module->currentAuxMode==i));
 					menuItem->module = module;
 					menuItem->newMode = i;
 					submenu->addChild(menuItem);
