@@ -153,7 +153,21 @@ struct Palette : Module {
 		configParam(OUTMIX_LPG_PARAM, -1.0, 1.0, 0.0, "Internal AD envelope to Output mix amount");
 		configParam(DECAY_CV_PARAM, -1.0, 1.0, 0.0, "Decay CV");
 		configParam(LPG_COLOR_CV_PARAM, -1.0, 1.0, 0.0, "LPG Colour CV");
-		configParam(ENGINE_CV_PARAM, -1.0, 1.0, 0.0, "Engine choice CV");
+		// doubles as Wavetable engine Aux mode
+		struct CustomQuantity3 : ParamQuantity {
+			std::string getLabel() override
+			{
+				Palette* module = reinterpret_cast<Palette*>(this->module);
+				if (module->voice[0].active_engine()==5
+				    && module->inputs[Palette::ENGINE_INPUT].isConnected()==false)
+				{
+					return "Aux output mode";
+				}
+				return "Engine choice CV";
+			}
+			
+		};
+		configParam<CustomQuantity3>(ENGINE_CV_PARAM, -1.0, 1.0, 0.0, "Engine choice CV");
 		configParam(UNISONOSPREAD_CV_PARAM, -1.0, 1.0, 0.0, "Unisono/Spread CV");
 		configParam(SECONDARY_FREQ_PARAM, -7.0, 7.0, 0.0, "Tuning");
 		configParam(WAVETABLE_AUX_MODE, 0.0, 7.0, 0.0, "Wavetable Aux output mode");
@@ -383,9 +397,14 @@ struct Palette : Module {
 				pitch += log2f(48000.f * args.sampleTime);
 			// Update patch
 			bool fm_input_connected = inputs[FREQ_INPUT].isConnected();
+			int auxMode = 0;
+			if (inputs[ENGINE_INPUT].isConnected()==false)
+				auxMode = rescale(params[ENGINE_CV_PARAM].getValue(),-1.0f,1.0f,0.0,7.0);
+			else auxMode = params[WAVETABLE_AUX_MODE].getValue();
 			for (int i=0;i<numpolychs;++i)
 			{
-				voice[i].wsAuxMode = params[WAVETABLE_AUX_MODE].getValue();
+				
+				voice[i].wsAuxMode = auxMode; // params[WAVETABLE_AUX_MODE].getValue();
 				voice[i].lpg_behavior = (plaits::Voice::LPGBehavior)lpg_mode;
 				if (!lfoMode)
 					patch[i].note = 60.f + pitch * 12.f + pitchAdjust;
@@ -634,7 +653,12 @@ struct PaletteKnobSmall : app::SvgKnob {
 			{
 				nvgTint(args.vg,nvgRGBA(0,255,0,255));
 			}
-			
+			if (module->voice[0].active_engine()==5
+			    && module->inputs[Palette::ENGINE_INPUT].isConnected()==false 
+				&& pq->paramId == Palette::ENGINE_CV_PARAM)
+			{
+				nvgTint(args.vg,nvgRGBA(0,255,0,255));
+			}
 		}
 		
 		SvgKnob::draw(args);
