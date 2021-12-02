@@ -648,6 +648,7 @@ struct PaletteKnobSmall : app::SvgKnob {
 		if (pq && module)
 		{
 			if (module->voice[0].active_engine()==7 
+				&& module->params[Palette::HARMONICS_PARAM].getValue()>0.42f
 				&& (pq->paramId == Palette::MORPH_LPG_PARAM 
 				|| pq->paramId == Palette::FREQ_LPG_PARAM))
 			{
