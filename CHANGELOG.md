@@ -1,8 +1,10 @@
 # 2.0.1
 
-- Palette : Change relevant parameter tooltips and tint knobs when using Speech engine
-- If Engine CV input not connected, the attenuverter knob controls mode for Wavetable
-engine's Aux output
+- Palette : Change knob tooltip texts and tint knobs green when using Speech engine
+in the word bank modes to hint the speech speed and intonation parameters are available
+- If Engine CV input not connected, the attenuverter knob is tinted green and controls mode for Wavetable
+engine's Aux output. If Engine CV input is connected, the Aux output mode can still be chosen
+from the module context menu.
 
 # 2.0.0
 
