@@ -113,8 +113,34 @@ struct Palette : Module {
 		configParam(FREQ_CV_PARAM, -1.0, 1.0, 0.0, "Frequency CV");
 		configParam(MORPH_CV_PARAM, -1.0, 1.0, 0.0, "Morph CV");
 		configParam(TIMBRE_LPG_PARAM, -1.0, 1.0, 0.0, "Internal AD envelope to Timbre amount");
-		configParam(MORPH_LPG_PARAM, -1.0, 1.0, 0.0, "Internal AD envelope to Morph amount");
-		configParam(FREQ_LPG_PARAM, -1.0, 1.0, 0.0, "Internal AD envelope to Frequency amount");
+		// doubles as Speech speed
+		struct CustomQuantity1 : ParamQuantity {
+			std::string getLabel() override
+			{
+				Palette* module = reinterpret_cast<Palette*>(this->module);
+				if (module->voice[0].active_engine()==7)
+				{
+					return "Speech speed";
+				}
+				return "Internal AD envelope to Morph amount";
+			}
+			
+		};
+		configParam<CustomQuantity1>(MORPH_LPG_PARAM, -1.0, 1.0, 0.0, "Internal AD envelope to Morph amount");
+		struct CustomQuantity2 : ParamQuantity {
+			std::string getLabel() override
+			{
+				Palette* module = reinterpret_cast<Palette*>(this->module);
+				if (module->voice[0].active_engine()==7)
+				{
+					return "Speech intonation";
+				}
+				return "Internal AD envelope to Frequency amount";
+			}
+			
+		};
+		// doubles as Speech intonation amount
+		configParam<CustomQuantity2>(FREQ_LPG_PARAM, -1.0, 1.0, 0.0, "Internal AD envelope to Frequency amount");
 		configParam(LPG_COLOR_PARAM, 0.0, 1.0, 0.5, "LPG Colour");
 		configParam(LPG_DECAY_PARAM, 0.0, 1.0, 0.5, "LPG/Internal envelope Decay");
 		configParam(OUTMIX_PARAM, 0.0, 1.0, 0.5, "Output mix");
