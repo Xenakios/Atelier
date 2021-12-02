@@ -12,6 +12,17 @@
 
 #define MAX_PALETTE_VOICES 16
 
+const std::string auxmodemenutexts[8] = {
+				"Classic (5 bit output)",
+				"Sine subosc at -12.1 semitones and 10% gain XOR'ed with main output",
+				"Sine subosc at -12.1 semitones and 50% gain XOR'ed with main output",
+				"Sine subosc at -0.1 semitones and 10% gain XOR'ed with main output",
+				"Sine subosc at -0.1 semitones and 50% gain XOR'ed with main output",
+				"Sine subosc at +12.1 semitones and 10% gain XOR'ed with main output",
+				"Sine subosc at +12.1 semitones and 50% gain XOR'ed with main output",
+				"Random value XOR'ed with main output",
+				};
+
 class NVGRestorer
 {
 public:
@@ -155,6 +166,18 @@ struct Palette : Module {
 		configParam(LPG_COLOR_CV_PARAM, -1.0, 1.0, 0.0, "LPG Colour CV");
 		// doubles as Wavetable engine Aux mode
 		struct CustomQuantity3 : ParamQuantity {
+			std::string getDisplayValueString() override
+			{
+				Palette* module = reinterpret_cast<Palette*>(this->module);
+				if (module->voice[0].active_engine()==5
+				    && module->inputs[Palette::ENGINE_INPUT].isConnected()==false)
+				{
+					int mode = rescale(module->params[Palette::ENGINE_CV_PARAM].getValue(),-1.0f,1.0f,0.0f,7.0f);
+					mode = clamp(mode,0,7);
+					return auxmodemenutexts[mode];
+				}
+				return string::f("%f",this->getValue());
+			}
 			std::string getLabel() override
 			{
 				Palette* module = reinterpret_cast<Palette*>(this->module);
@@ -975,19 +998,10 @@ struct PaletteWidget : ModuleWidget {
 			Menu *createChildMenu() override 
 			{
 				Menu *submenu = new Menu();
-				std::string menutexts[8] = {
-				"Classic (5 bit output)",
-				"Sine subosc at -12.1 semitones and 10% gain XOR'ed with main output",
-				"Sine subosc at -12.1 semitones and 50% gain XOR'ed with main output",
-				"Sine subosc at -0.1 semitones and 10% gain XOR'ed with main output",
-				"Sine subosc at -0.1 semitones and 50% gain XOR'ed with main output",
-				"Sine subosc at +12.1 semitones and 10% gain XOR'ed with main output",
-				"Sine subosc at +12.1 semitones and 50% gain XOR'ed with main output",
-				"Random value XOR'ed with main output",
-				};
+				
 				for (int i=0;i<8;++i)
 				{
-					auto menuItem = createMenuItem<WaveShaperAuxModeItem>(menutexts[i], 
+					auto menuItem = createMenuItem<WaveShaperAuxModeItem>(auxmodemenutexts[i], 
 						CHECKMARK((int)module->params[Palette::WAVETABLE_AUX_MODE].getValue()==i));
 					menuItem->module = module;
 					menuItem->newMode = i;
