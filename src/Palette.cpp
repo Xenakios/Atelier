@@ -92,6 +92,13 @@ struct Palette : Module {
 		PITCH_SPREAD_OUTPUT,
 		NUM_OUTPUTS
 	};
+	enum ParameterMode
+	{
+		PMOD_NORMAL,
+		PMOD_SPEECH,
+		PMOD_WAVETABLE,
+		PMOD_LAST
+	};
 	plaits::Voice voice[MAX_PALETTE_VOICES];
 	plaits::Patch patch[MAX_PALETTE_VOICES] = {};
 	plaits::Modulations modulations[MAX_PALETTE_VOICES] = {};
@@ -112,6 +119,27 @@ struct Palette : Module {
 
 	int curNumVoices = 0;
 	int curResamplingQ = 4;
+	ParameterMode getParameterMode()
+	{
+		if (voice[0].active_engine()==7 && voice[0].epars.speechMode>=0)
+			return PMOD_SPEECH;
+		if (voice[0].active_engine()==5 && inputs[ENGINE_INPUT].isConnected()==false)
+			return PMOD_WAVETABLE;
+		return PMOD_NORMAL;
+	}
+	struct MyCustomQuantity : ParamQuantity
+		{
+			virtual std::string getAltText(int which) = 0;
+			std::string getLabel() override
+			{
+				Palette* module = reinterpret_cast<Palette*>(this->module);
+				if (module->getParameterMode()==Palette::PMOD_SPEECH)
+				{
+					return getAltText(1);
+				}
+				return getAltText(0);
+			}
+		};
 	Palette() {
 		config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS);
 		configParam(MODEL1_PARAM, 0.0, 1.0, 0.0, "Model selection 1");
@@ -125,29 +153,24 @@ struct Palette : Module {
 		configParam(MORPH_CV_PARAM, -1.0, 1.0, 0.0, "Morph CV");
 		configParam(TIMBRE_LPG_PARAM, -1.0, 1.0, 0.0, "Internal AD envelope to Timbre amount");
 		// doubles as Speech speed
-		struct CustomQuantity1 : ParamQuantity {
-			std::string getLabel() override
+		
+		struct CustomQuantity1 : MyCustomQuantity {
+			std::string getAltText(int which) override
 			{
-				Palette* module = reinterpret_cast<Palette*>(this->module);
-				if (module->voice[0].active_engine()==7 && module->voice[0].epars.speechMode>=0)
-				{
-					return "Speech speed";
-				}
-				return "Internal AD envelope to Morph amount";
+				if (which == 0)
+					return "Internal AD envelope to Morph amount";
+				return "Speech speed";
 			}
-			
 		};
 		configParam<CustomQuantity1>(MORPH_LPG_PARAM, -1.0, 1.0, 0.0, "Internal AD envelope to Morph amount");
-		struct CustomQuantity2 : ParamQuantity {
-			std::string getLabel() override
+		struct CustomQuantity2 : MyCustomQuantity {
+			std::string getAltText(int which) override
 			{
-				Palette* module = reinterpret_cast<Palette*>(this->module);
-				if (module->voice[0].active_engine()==7 && module->voice[0].epars.speechMode>=0)
-				{
-					return "Speech intonation";
-				}
-				return "Internal AD envelope to Frequency amount";
+				if (which == 0)
+					return "Internal AD envelope to Frequency amount";
+				return "Speech intonation";
 			}
+			
 			
 		};
 		// doubles as Speech intonation amount
@@ -169,8 +192,7 @@ struct Palette : Module {
 			std::string getDisplayValueString() override
 			{
 				Palette* module = reinterpret_cast<Palette*>(this->module);
-				if (module->voice[0].active_engine()==5
-				    && module->inputs[Palette::ENGINE_INPUT].isConnected()==false)
+				if (module->getParameterMode()==Palette::PMOD_WAVETABLE)
 				{
 					int mode = rescale(module->params[Palette::ENGINE_CV_PARAM].getValue(),-1.0f,1.0f,0.0f,7.0f);
 					mode = clamp(mode,0,7);
@@ -672,15 +694,13 @@ struct PaletteKnobSmall : app::SvgKnob {
 		auto pq = getParamQuantity();
 		if (pq && module)
 		{
-			if (module->voice[0].active_engine()==7 
-				&& module->voice[0].epars.speechMode>=0
+			if (module->getParameterMode()==Palette::PMOD_SPEECH
 				&& (pq->paramId == Palette::MORPH_LPG_PARAM 
 				|| pq->paramId == Palette::FREQ_LPG_PARAM))
 			{
 				nvgTint(args.vg,nvgRGBA(0,255,0,255));
 			}
-			if (module->voice[0].active_engine()==5
-			    && module->inputs[Palette::ENGINE_INPUT].isConnected()==false 
+			if (module->getParameterMode()==Palette::PMOD_WAVETABLE 
 				&& pq->paramId == Palette::ENGINE_CV_PARAM)
 			{
 				nvgTint(args.vg,nvgRGBA(0,255,0,255));
@@ -990,8 +1010,7 @@ struct PaletteWidget : ModuleWidget {
 			Palette *module = nullptr;
 			int newMode = 0;
 			void onAction(const event::Action &e) override {
-				if (module->voice[0].active_engine()==5 
-					&& module->inputs[Palette::ENGINE_INPUT].isConnected()==false)
+				if (module->getParameterMode()==Palette::PMOD_WAVETABLE)
 				{
 					float pv = rescale((float)newMode,0.0f,7.0f,-1.0f,1.0f);
 					module->params[Palette::ENGINE_CV_PARAM].setValue(pv);
