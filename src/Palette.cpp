@@ -194,7 +194,7 @@ struct Palette : Module {
 				Palette* module = reinterpret_cast<Palette*>(this->module);
 				if (module->getParameterMode()==Palette::PMOD_WAVETABLE)
 				{
-					int mode = rescale(module->params[Palette::ENGINE_CV_PARAM].getValue(),-1.0f,1.0f,0.0f,7.0f);
+					int mode = module->params[Palette::WAVETABLE_AUX_MODE].getValue();
 					mode = clamp(mode,0,7);
 					return auxmodemenutexts[mode];
 				}
@@ -212,10 +212,10 @@ struct Palette : Module {
 			}
 			
 		};
-		configParam<CustomQuantity3>(ENGINE_CV_PARAM, -1.0, 1.0, 0.0, "Engine choice CV");
+		configParam(ENGINE_CV_PARAM, -1.0, 1.0, 0.0, "Engine choice CV");
 		configParam(UNISONOSPREAD_CV_PARAM, -1.0, 1.0, 0.0, "Unisono/Spread CV");
 		configParam(SECONDARY_FREQ_PARAM, -7.0, 7.0, 0.0, "Tuning");
-		configParam(WAVETABLE_AUX_MODE, 0.0, 7.0, 0.0, "Wavetable Aux output mode");
+		configParam<CustomQuantity3>(WAVETABLE_AUX_MODE, 0.0, 7.0, 0.0, "Wavetable Aux output mode");
 		configOutput(AUX2_OUTPUT, "Mixed audio");
 		configOutput(OUT_OUTPUT,"Primary audio");
 		configOutput(AUX_OUTPUT,"Secondary audio");
@@ -444,9 +444,9 @@ struct Palette : Module {
 			// Update patch
 			bool fm_input_connected = inputs[FREQ_INPUT].isConnected();
 			int auxMode = 0;
-			if (inputs[ENGINE_INPUT].isConnected()==false)
-				auxMode = rescale(params[ENGINE_CV_PARAM].getValue(),-1.0f,1.0f,0.0,7.0);
-			else auxMode = params[WAVETABLE_AUX_MODE].getValue();
+			//if (inputs[ENGINE_INPUT].isConnected()==false)
+			//	auxMode = rescale(params[ENGINE_CV_PARAM].getValue(),-1.0f,1.0f,0.0,7.0);
+			auxMode = params[WAVETABLE_AUX_MODE].getValue();
 			currentAuxMode = auxMode;
 			for (int i=0;i<numpolychs;++i)
 			{
@@ -701,7 +701,7 @@ struct PaletteKnobSmall : app::SvgKnob {
 				nvgTint(args.vg,nvgRGBA(0,255,0,255));
 			}
 			if (module->getParameterMode()==Palette::PMOD_WAVETABLE 
-				&& pq->paramId == Palette::ENGINE_CV_PARAM)
+				&& pq->paramId == Palette::WAVETABLE_AUX_MODE)
 			{
 				nvgTint(args.vg,nvgRGBA(0,255,0,255));
 			}
@@ -821,6 +821,15 @@ struct PaletteWidget : ModuleWidget {
 		auto plaits = dynamic_cast<Palette*>(module);
 		if (plaits)
 		{
+			if (plaits->getParameterMode()==Palette::PMOD_WAVETABLE)
+			{
+				mAuxOutModeKnob->setVisible(true);
+				mEngineCVKnob->setVisible(false);
+			} else
+			{
+				mAuxOutModeKnob->setVisible(false);
+				mEngineCVKnob->setVisible(true);
+			}
 			if (plaits->patch->engine!=curSubPanel)
 			{
 				curSubPanel = plaits->patch->engine;
@@ -910,7 +919,9 @@ struct PaletteWidget : ModuleWidget {
 		addParam(createParamCentered<PaletteButton>(Vec(77.5, 98.5), module, Palette::MODEL1_PARAM));
 		addParam(createParamCentered<PaletteButton>(Vec(192.5, 98.5), module, Palette::MODEL2_PARAM));
 
-		addParam(createParamCentered<PaletteKnobSmall>(Vec(18,76), module, Palette::ENGINE_CV_PARAM));
+		addParam(mEngineCVKnob = createParamCentered<PaletteKnobSmall>(Vec(18,76), module, Palette::ENGINE_CV_PARAM));
+		addParam(mAuxOutModeKnob = createParamCentered<PaletteKnobSmall>(Vec(18,76), module, Palette::WAVETABLE_AUX_MODE));
+		mAuxOutModeKnob->setVisible(false);
 		addInput(createInputCentered<MyPort1>(Vec(18,98), module, Palette::ENGINE_INPUT));
 
 		addParam(createParamCentered<PaletteKnobSmall>(Vec(252,283), module, Palette::OUTMIX_CV_PARAM));
@@ -927,7 +938,8 @@ struct PaletteWidget : ModuleWidget {
 		ledwid->box = {{0,0},{box.size}};
 		addChild(ledwid);
 	}
-
+	PaletteKnobSmall* mEngineCVKnob = nullptr;
+	PaletteKnobSmall* mAuxOutModeKnob = nullptr;
 	void appendContextMenu(Menu *menu) override {
 		Palette *module = dynamic_cast<Palette*>(this->module);
 		
@@ -1010,15 +1022,7 @@ struct PaletteWidget : ModuleWidget {
 			Palette *module = nullptr;
 			int newMode = 0;
 			void onAction(const event::Action &e) override {
-				if (module->getParameterMode()==Palette::PMOD_WAVETABLE)
-				{
-					float pv = rescale((float)newMode,0.0f,7.0f,-1.0f,1.0f);
-					module->params[Palette::ENGINE_CV_PARAM].setValue(pv);
-				} else
-				{
-					module->params[Palette::WAVETABLE_AUX_MODE].setValue(newMode);
-				}
-				
+				module->params[Palette::WAVETABLE_AUX_MODE].setValue(newMode);
 			}
 		};
 		
