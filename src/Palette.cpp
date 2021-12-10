@@ -216,6 +216,7 @@ struct Palette : Module {
 		configParam(UNISONOSPREAD_CV_PARAM, -1.0, 1.0, 0.0, "Unisono/Spread CV");
 		configParam(SECONDARY_FREQ_PARAM, -7.0, 7.0, 0.0, "Tuning");
 		configParam<CustomQuantity3>(WAVETABLE_AUX_MODE, 0.0, 7.0, 0.0, "Wavetable Aux output mode");
+		getParamQuantity(WAVETABLE_AUX_MODE)->snapEnabled = true;
 		configOutput(AUX2_OUTPUT, "Mixed audio");
 		configOutput(OUT_OUTPUT,"Primary audio");
 		configOutput(AUX_OUTPUT,"Secondary audio");
