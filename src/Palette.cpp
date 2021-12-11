@@ -200,17 +200,6 @@ struct Palette : Module {
 				}
 				return string::f("%f",this->getValue());
 			}
-			std::string getLabel() override
-			{
-				Palette* module = reinterpret_cast<Palette*>(this->module);
-				if (module->voice[0].active_engine()==5
-				    && module->inputs[Palette::ENGINE_INPUT].isConnected()==false)
-				{
-					return "Aux output mode";
-				}
-				return "Engine choice CV";
-			}
-			
 		};
 		configParam(ENGINE_CV_PARAM, -1.0, 1.0, 0.0, "Engine choice CV");
 		configParam(UNISONOSPREAD_CV_PARAM, -1.0, 1.0, 0.0, "Unisono/Spread CV");
@@ -383,7 +372,7 @@ struct Palette : Module {
 		}
 		return 0.0f;
 	}
-	int currentAuxMode = 0;
+	
 	void process(const ProcessArgs &args) override {
 		float spreadamt = params[UNISONOSPREAD_PARAM].getValue();
 		if (inputs[SPREAD_INPUT].isConnected())
@@ -444,11 +433,7 @@ struct Palette : Module {
 				pitch += log2f(48000.f * args.sampleTime);
 			// Update patch
 			bool fm_input_connected = inputs[FREQ_INPUT].isConnected();
-			int auxMode = 0;
-			//if (inputs[ENGINE_INPUT].isConnected()==false)
-			//	auxMode = rescale(params[ENGINE_CV_PARAM].getValue(),-1.0f,1.0f,0.0,7.0);
-			auxMode = params[WAVETABLE_AUX_MODE].getValue();
-			currentAuxMode = auxMode;
+			int auxMode = params[WAVETABLE_AUX_MODE].getValue();
 			for (int i=0;i<numpolychs;++i)
 			{
 				
@@ -691,26 +676,13 @@ struct PaletteKnobSmall : app::SvgKnob {
 	void draw(const DrawArgs& args) override
 	{
 		nvgSave(args.vg);
-		auto module = dynamic_cast<Palette*>(this->module);
-		auto pq = getParamQuantity();
-		if (pq && module)
-		{
-			if (module->getParameterMode()==Palette::PMOD_SPEECH
-				&& (pq->paramId == Palette::MORPH_LPG_PARAM 
-				|| pq->paramId == Palette::FREQ_LPG_PARAM))
-			{
-				nvgTint(args.vg,nvgRGBA(0,255,0,255));
-			}
-			if (module->getParameterMode()==Palette::PMOD_WAVETABLE 
-				&& pq->paramId == Palette::WAVETABLE_AUX_MODE)
-			{
-				nvgTint(args.vg,nvgRGBA(0,255,0,255));
-			}
-		}
-		
+		if (mWithTint)
+			nvgTint(args.vg,mTintColor);
 		SvgKnob::draw(args);
 		nvgRestore(args.vg);
 	}
+	bool mWithTint = false;
+	NVGcolor mTintColor{nvgRGBA(0,255,0,255)};
 };
 
 struct MyPort1 : app::SvgPort {
@@ -819,21 +791,20 @@ struct PaletteWidget : ModuleWidget {
 	void step() override
 	{
 		ModuleWidget::step();
-		auto plaits = dynamic_cast<Palette*>(module);
-		if (plaits)
+		auto palettem = dynamic_cast<Palette*>(module);
+		if (palettem)
 		{
-			if (plaits->getParameterMode()==Palette::PMOD_WAVETABLE)
+			bool wtab = palettem->getParameterMode()==Palette::PMOD_WAVETABLE;
+			mAuxOutModeKnob->setVisible(wtab);
+			mEngineCVKnob->setVisible(!wtab);
+			
+			bool speech = palettem->getParameterMode() == Palette::PMOD_SPEECH;
+			mSpeechKnob1->mWithTint = speech;
+			mSpeechKnob2->mWithTint = speech;
+			
+			if (palettem->patch->engine!=curSubPanel)
 			{
-				mAuxOutModeKnob->setVisible(true);
-				mEngineCVKnob->setVisible(false);
-			} else
-			{
-				mAuxOutModeKnob->setVisible(false);
-				mEngineCVKnob->setVisible(true);
-			}
-			if (plaits->patch->engine!=curSubPanel)
-			{
-				curSubPanel = plaits->patch->engine;
+				curSubPanel = palettem->patch->engine;
 				if (subPanels[curSubPanel]!=nullptr)
 				{
 					swgWidget->show();	
@@ -910,7 +881,7 @@ struct PaletteWidget : ModuleWidget {
 		
 		addParam(createParamCentered<PaletteKnobSmall>(Vec(18,206), module, Palette::HARMONICS_LPG_PARAM));
 		addParam(createParamCentered<PaletteKnobSmall>(Vec(18,175), module, Palette::TIMBRE_LPG_PARAM));
-		addParam(createParamCentered<PaletteKnobSmall>(Vec(252,175), module, Palette::MORPH_LPG_PARAM));
+		addParam(mSpeechKnob1 = createParamCentered<PaletteKnobSmall>(Vec(252,175), module, Palette::MORPH_LPG_PARAM));
 
 		addParam(createParamCentered<PaletteKnobSmall>(Vec(252,333), module, Palette::DECAY_CV_PARAM));
 		addInput(createInputCentered<MyPort1>(Vec(252,355), module, Palette::LPG_DECAY_INPUT));
@@ -923,6 +894,7 @@ struct PaletteWidget : ModuleWidget {
 		addParam(mEngineCVKnob = createParamCentered<PaletteKnobSmall>(Vec(18,76), module, Palette::ENGINE_CV_PARAM));
 		addParam(mAuxOutModeKnob = createParamCentered<PaletteKnobSmall>(Vec(18,76), module, Palette::WAVETABLE_AUX_MODE));
 		mAuxOutModeKnob->setVisible(false);
+		mAuxOutModeKnob->mWithTint = true;
 		addInput(createInputCentered<MyPort1>(Vec(18,98), module, Palette::ENGINE_INPUT));
 
 		addParam(createParamCentered<PaletteKnobSmall>(Vec(252,283), module, Palette::OUTMIX_CV_PARAM));
@@ -930,7 +902,7 @@ struct PaletteWidget : ModuleWidget {
 
 		addParam(createParamCentered<PaletteKnobSmall>(Vec(18,283), module, Palette::OUTMIX_LPG_PARAM));
 
-		addParam(createParamCentered<PaletteKnobSmall>(Vec(252,206), module, Palette::FREQ_LPG_PARAM));
+		addParam(mSpeechKnob2 = createParamCentered<PaletteKnobSmall>(Vec(252,206), module, Palette::FREQ_LPG_PARAM));
 
 		addParam(createParamCentered<PaletteKnobSmall>(Vec(252,76), module, Palette::UNISONOSPREAD_CV_PARAM));
 		addInput(createInputCentered<MyPort1>(Vec(252,98), module, Palette::SPREAD_INPUT));
@@ -941,6 +913,8 @@ struct PaletteWidget : ModuleWidget {
 	}
 	PaletteKnobSmall* mEngineCVKnob = nullptr;
 	PaletteKnobSmall* mAuxOutModeKnob = nullptr;
+	PaletteKnobSmall* mSpeechKnob1 = nullptr;
+	PaletteKnobSmall* mSpeechKnob2 = nullptr;
 	void appendContextMenu(Menu *menu) override {
 		Palette *module = dynamic_cast<Palette*>(this->module);
 		
@@ -1033,11 +1007,11 @@ struct PaletteWidget : ModuleWidget {
 			Menu *createChildMenu() override 
 			{
 				Menu *submenu = new Menu();
-				
+				int curamode = module->params[Palette::WAVETABLE_AUX_MODE].getValue();
 				for (int i=0;i<8;++i)
 				{
 					auto menuItem = createMenuItem<WaveShaperAuxModeItem>(auxmodemenutexts[i], 
-						CHECKMARK(module->currentAuxMode==i));
+						CHECKMARK(curamode==i));
 					menuItem->module = module;
 					menuItem->newMode = i;
 					submenu->addChild(menuItem);
