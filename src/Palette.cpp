@@ -1,6 +1,6 @@
 //#include "AudibleInstruments.hpp"
 #include "plugin.hpp"
-
+#include <array>
 #include <sys/stat.h>
 
 #pragma GCC diagnostic push
@@ -12,7 +12,7 @@
 
 #define MAX_PALETTE_VOICES 16
 
-const std::string auxmodemenutexts[8] = {
+const std::array<std::string,8> auxmodemenutexts = {
 				"Classic (5 bit output)",
 				"Sine subosc at -12.1 semitones and 10% gain XOR'ed with main output",
 				"Sine subosc at -12.1 semitones and 50% gain XOR'ed with main output",
@@ -195,7 +195,7 @@ struct Palette : Module {
 				if (module->getParameterMode()==Palette::PMOD_WAVETABLE)
 				{
 					int mode = module->params[Palette::WAVETABLE_AUX_MODE].getValue();
-					mode = clamp(mode,0,7);
+					mode = clamp(mode,0,auxmodemenutexts.size()-1);
 					return auxmodemenutexts[mode];
 				}
 				return string::f("%f",this->getValue());
@@ -586,7 +586,7 @@ struct Palette : Module {
 };
 
 
-static const std::string modelLabels[16] = {
+static const std::array<std::string,16> modelLabels = {
 	"Pair of classic waveforms",
 	"Waveshaping oscillator",
 	"Two operator FM",
@@ -602,7 +602,7 @@ static const std::string modelLabels[16] = {
 	"Modal resonator",
 	"Analog bass drum",
 	"Analog snare drum",
-	"Analog hi-hat",
+	"Analog hi-hat"
 };
 
 struct PaletteKnobLarge : app::SvgKnob {
@@ -675,11 +675,10 @@ struct PaletteKnobSmall : app::SvgKnob {
 	}
 	void draw(const DrawArgs& args) override
 	{
-		nvgSave(args.vg);
+		NVGRestorer rs(args.vg);
 		if (mWithTint)
 			nvgTint(args.vg,mTintColor);
 		SvgKnob::draw(args);
-		nvgRestore(args.vg);
 	}
 	bool mWithTint = false;
 	NVGcolor mTintColor{nvgRGBA(0,255,0,255)};
@@ -794,11 +793,12 @@ struct PaletteWidget : ModuleWidget {
 		auto palettem = dynamic_cast<Palette*>(module);
 		if (palettem)
 		{
-			bool wtab = palettem->getParameterMode()==Palette::PMOD_WAVETABLE;
+			auto pmod = palettem->getParameterMode();
+			bool wtab = pmod == Palette::PMOD_WAVETABLE;
 			mAuxOutModeKnob->setVisible(wtab);
 			mEngineCVKnob->setVisible(!wtab);
 			
-			bool speech = palettem->getParameterMode() == Palette::PMOD_SPEECH;
+			bool speech = pmod == Palette::PMOD_SPEECH;
 			mSpeechKnob1->mWithTint = speech;
 			mSpeechKnob2->mWithTint = speech;
 			
@@ -1008,7 +1008,7 @@ struct PaletteWidget : ModuleWidget {
 			{
 				Menu *submenu = new Menu();
 				int curamode = module->params[Palette::WAVETABLE_AUX_MODE].getValue();
-				for (int i=0;i<8;++i)
+				for (int i=0;i<(int)auxmodemenutexts.size();++i)
 				{
 					auto menuItem = createMenuItem<WaveShaperAuxModeItem>(auxmodemenutexts[i], 
 						CHECKMARK(curamode==i));
@@ -1089,8 +1089,9 @@ struct PaletteWidget : ModuleWidget {
 
 		menu->addChild(new MenuEntry());
 		menu->addChild(createMenuLabel("Models"));
-		for (int i = 0; i < 16; i++) {
-			PlaitsModelItem *modelItem = createMenuItem<PlaitsModelItem>(modelLabels[i], CHECKMARK(module->patch[0].engine == i));
+		for (int i = 0; i < (int)modelLabels.size(); i++) {
+			PlaitsModelItem *modelItem = createMenuItem<PlaitsModelItem>(modelLabels[i], 
+				CHECKMARK(module->patch[0].engine == i));
 			modelItem->module = module;
 			modelItem->model = i;
 			menu->addChild(modelItem);
