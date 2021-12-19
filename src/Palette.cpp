@@ -566,8 +566,12 @@ struct Palette : Module {
 		for (int i=0;i<numpolychs;++i)
 		{
 			float outmix = outmixbase;
-			outmix += rescale(inputs[OUTMIX_INPUT].getVoltage(i)*params[OUTMIX_CV_PARAM].getValue(),
-			-5.0f,5.0f,-0.5f,0.5f);
+			if (inputs[OUTMIX_INPUT].getChannels()>1)
+				outmix += rescale(inputs[OUTMIX_INPUT].getVoltage(i)*params[OUTMIX_CV_PARAM].getValue(),
+				-5.0f,5.0f,-0.5f,0.5f);
+			else
+				outmix += rescale(inputs[OUTMIX_INPUT].getVoltage(0)*params[OUTMIX_CV_PARAM].getValue(),
+				-5.0f,5.0f,-0.5f,0.5f);
 			outmix += voice[i].getDecayEnvelopeValue()*params[OUTMIX_LPG_PARAM].getValue();
 			outmix = clamp(outmix,0.0f,1.0f);
 			currentOutmix[i] = outmix;

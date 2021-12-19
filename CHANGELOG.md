@@ -1,3 +1,7 @@
+# 2.0.2
+
+- Palette : Fix outmix CV modulation
+
 # 2.0.1
 
 - Palette : Change knob tooltip texts and tint knobs green when using Speech engine
