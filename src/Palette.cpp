@@ -980,7 +980,19 @@ struct PaletteWidget : ModuleWidget {
 				}
 				return 0.0f;
 			}
-
+			std::string getDisplayValueString() override
+			{
+				if (module == nullptr || parIndex<0)
+					return "";
+				float v = module->mParRandomModes[parIndex];
+				if (v<0.001f)
+					return "Off";
+				if (v>=0.001f && v<0.999f)
+				{
+					return "Mutate "+std::to_string((int)rescale(v,0.001,0.999,0.0f,100.0f))+"%";
+				}
+				return "Full random";
+			}
 		};
 		struct RandomizeMenuItems : MenuItem
 		{
@@ -991,11 +1003,11 @@ struct PaletteWidget : ModuleWidget {
 				for (int i=0;i<module->params.size();++i)
 				{
 					auto holder = new rack::Widget;
-					holder->box.size.x = 350;
+					holder->box.size.x = 400;
 					holder->box.size.y = 20;
 					auto lab = new rack::Label;
 					lab->text = module->getParamQuantity(i)->getLabel();
-					lab->box.size.x = 250;
+					lab->box.size.x = 280;
 					lab->box.size.y = 20;
 					
 					holder->addChild(lab);
@@ -1004,8 +1016,8 @@ struct PaletteWidget : ModuleWidget {
 					qan->module = module;
 					qan->parIndex = i;
 					slider->quantity = qan;
-					slider->box.pos.x = 251;
-					slider->box.size.x = 98;
+					slider->box.pos.x = 281;
+					slider->box.size.x = 118;
 					slider->box.size.y = 20;
 					holder->addChild(slider);
 					submenu->addChild(holder);
