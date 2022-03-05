@@ -70,7 +70,7 @@ struct Palette : Module {
 		WAVETABLE_AUX_MODE,
 		NUM_PARAMS
 	};
-	std::array<int,NUM_PARAMS> mParRandomModes;
+	std::array<float,NUM_PARAMS> mParRandomModes;
 	enum InputIds {
 		ENGINE_INPUT,
 		TIMBRE_INPUT,
@@ -143,7 +143,9 @@ struct Palette : Module {
 		};
 	Palette() {
 		for (int i=0;i<mParRandomModes.size();++i)
-			mParRandomModes[i] = 2; // normal
+			mParRandomModes[i] = 1.0f; // 0.0f disabled, >0.0f mutate with strength, 1.0f normal full randomization
+		mParRandomModes[MODEL1_PARAM] = 0.0f;
+		mParRandomModes[UNISONOMODE_PARAM] = 0.0f;
 		config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS);
 		configParam(MODEL1_PARAM, 0.0, 1.0, 0.0, "Model selection 1");
 		configParam(MODEL2_PARAM, 0.0, 1.0, 0.0, "Model selection 2");
@@ -268,22 +270,28 @@ struct Palette : Module {
 	
 	void onRandomize(const RandomizeEvent& e) override
 	{
-		int engineindex = random::u32() % 16;
-		for (int i=0;i<MAX_PALETTE_VOICES;++i)
-			patch[i].engine = engineindex;
+		if (mParRandomModes[MODEL1_PARAM]>0.0f)
+		{
+			int engineindex = random::u32() % 16;
+			for (int i=0;i<MAX_PALETTE_VOICES;++i)
+				patch[i].engine = engineindex;
+		}
+		
 		for (int i=0;i<mParRandomModes.size();++i)
 		{
 			float minv = getParamQuantity(i)->getMinValue();
 			float maxv = getParamQuantity(i)->getMaxValue();
-			if (mParRandomModes[i] == 1)
+			if (mParRandomModes[i] > 0.999f)
 			{
 				
 				float z = rack::random::uniform();
 				float v = rescale(z,0.0f,1.0f,minv,maxv);
 				params[i].setValue(v);
-			} else if (mParRandomModes[i] == 2)
+			} 
+			if (mParRandomModes[i] > 0.001f && mParRandomModes[i] < 0.999f )
 			{
-				float z = rack::random::normal()*0.1f;
+				float mutamt = rescale(mParRandomModes[i],0.001f,0.999f,0.01f,0.1f);
+				float z = rack::random::normal()*mutamt;
 				float v = params[i].getValue();
 				v += z;
 				v = clamp(v,minv,maxv);
@@ -951,6 +959,62 @@ struct PaletteWidget : ModuleWidget {
 				module->lpg_mode = lpg_mode;
 			}
 		};
+		
+		struct RandQuantity : Quantity
+		{
+			Palette* module = nullptr;
+			int parIndex = -1;
+			void setValue(float value) override
+			{
+				value = clamp(value,0.0f,1.0f);
+				if (module && parIndex>=0)
+				{
+					module->mParRandomModes[parIndex] = value;
+				}
+			}
+			float getValue() override
+			{
+				if (module && parIndex>=0)
+				{
+					return module->mParRandomModes[parIndex];
+				}
+				return 0.0f;
+			}
+
+		};
+		struct RandomizeMenuItems : MenuItem
+		{
+			Palette* module = nullptr;
+			Menu *createChildMenu() override 
+			{
+				Menu *submenu = new Menu();
+				for (int i=0;i<module->params.size();++i)
+				{
+					auto holder = new rack::Widget;
+					holder->box.size.x = 350;
+					holder->box.size.y = 20;
+					auto lab = new rack::Label;
+					lab->text = module->getParamQuantity(i)->getLabel();
+					lab->box.size.x = 250;
+					lab->box.size.y = 20;
+					
+					holder->addChild(lab);
+					auto slider = new rack::Slider;
+					auto qan = new RandQuantity;
+					qan->module = module;
+					qan->parIndex = i;
+					slider->quantity = qan;
+					slider->box.pos.x = 251;
+					slider->box.size.x = 98;
+					slider->box.size.y = 20;
+					holder->addChild(slider);
+					submenu->addChild(holder);
+				}
+				
+				
+				return submenu;
+			}
+		};
 		struct LPGMenuItems : MenuItem
 		{
 			Palette* module = nullptr;
@@ -1111,7 +1175,10 @@ struct PaletteWidget : ModuleWidget {
 		lpg_items->module = module;
 		menu->addChild(lpg_items);
 
-		menu->addChild(new MenuEntry());
+		RandomizeMenuItems* rmenu = createMenuItem<RandomizeMenuItems>("Parameter randomization",RIGHT_ARROW);
+		rmenu->module = module;
+		menu->addChild(rmenu);
+		
 		menu->addChild(createMenuLabel("Models"));
 		for (int i = 0; i < (int)modelLabels.size(); i++) {
 			PlaitsModelItem *modelItem = createMenuItem<PlaitsModelItem>(modelLabels[i], 
