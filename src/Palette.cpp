@@ -70,6 +70,7 @@ struct Palette : Module {
 		WAVETABLE_AUX_MODE,
 		NUM_PARAMS
 	};
+	std::array<int,NUM_PARAMS> mParRandomModes;
 	enum InputIds {
 		ENGINE_INPUT,
 		TIMBRE_INPUT,
@@ -141,6 +142,8 @@ struct Palette : Module {
 			}
 		};
 	Palette() {
+		for (int i=0;i<mParRandomModes.size();++i)
+			mParRandomModes[i] = 2; // normal
 		config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS);
 		configParam(MODEL1_PARAM, 0.0, 1.0, 0.0, "Model selection 1");
 		configParam(MODEL2_PARAM, 0.0, 1.0, 0.0, "Model selection 2");
@@ -234,10 +237,7 @@ struct Palette : Module {
 		}
 		onReset();
 	}
-	~Palette()
-	{
-		
-	}
+	~Palette() {}
 	void onReset() override {
 		for (int i=0;i<MAX_PALETTE_VOICES;++i)
 		{
@@ -265,12 +265,32 @@ struct Palette : Module {
 		lowCpu = false;
 		curResamplingQ = qu;
 	}
-	void onRandomize() override {
+	
+	void onRandomize(const RandomizeEvent& e) override
+	{
 		int engineindex = random::u32() % 16;
 		for (int i=0;i<MAX_PALETTE_VOICES;++i)
 			patch[i].engine = engineindex;
+		for (int i=0;i<mParRandomModes.size();++i)
+		{
+			float minv = getParamQuantity(i)->getMinValue();
+			float maxv = getParamQuantity(i)->getMaxValue();
+			if (mParRandomModes[i] == 1)
+			{
+				
+				float z = rack::random::uniform();
+				float v = rescale(z,0.0f,1.0f,minv,maxv);
+				params[i].setValue(v);
+			} else if (mParRandomModes[i] == 2)
+			{
+				float z = rack::random::normal()*0.1f;
+				float v = params[i].getValue();
+				v += z;
+				v = clamp(v,minv,maxv);
+				params[i].setValue(v);
+			}
+		}	
 	}
-
 	json_t *dataToJson() override {
 		json_t *rootJ = json_object();
 
