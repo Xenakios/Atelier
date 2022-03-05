@@ -1,3 +1,8 @@
+# 2.0.3
+
+- Palette : Custom parameter randomization modes : off, mutate with settable strength, full range random.
+Accessible from the module context menu.  
+
 # 2.0.2
 
 - Palette : Fix outmix CV modulation
