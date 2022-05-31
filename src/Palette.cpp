@@ -237,6 +237,11 @@ struct Palette : Module {
 			outputSrc[i].setQuality(curResamplingQ);
 			currentOutmix[i]=0.0f;
 		}
+		for (int i=0;i<m_sqrt_table.size();++i)
+		{
+			float x = rescale((float)i,0,m_sqrt_table.size()-1,0.0f,1.0f);
+			m_sqrt_table[i] = std::sqrt(x);
+		}
 		onReset();
 	}
 	~Palette() {}
@@ -310,6 +315,7 @@ struct Palette : Module {
 		json_object_set_new(rootJ, "lfoMode", json_boolean(lfoMode));
 		json_object_set_new(rootJ, "showmods", json_boolean(showModulations));
 		json_object_set_new(rootJ, "lpgMode", json_integer(lpg_mode));
+		json_object_set_new(rootJ, "outmixmode", json_integer(m_mix_out_type));
 		return rootJ;
 	}
 
@@ -354,7 +360,9 @@ struct Palette : Module {
 		json_t *lpgModeJ = json_object_get(rootJ, "lpgMode");
 		if (lpgModeJ)
 			lpg_mode = json_integer_value(lpgModeJ);
-		
+		json_t* mixmodeJ = json_object_get(rootJ,"outmixmode");
+		if (mixmodeJ)
+			m_mix_out_type = json_integer_value(mixmodeJ);
 	}
 	float getModulatedParamNormalized(int paramid, int whichvoice=0)
 	{
@@ -591,6 +599,7 @@ struct Palette : Module {
 		
 		// Set output
 		float outmixbase = params[OUTMIX_PARAM].getValue();
+		
 		for (int i=0;i<numpolychs;++i)
 		{
 			float outmix = outmixbase;
@@ -602,7 +611,16 @@ struct Palette : Module {
 				-5.0f,5.0f,-0.5f,0.5f);
 			outmix += voice[i].getDecayEnvelopeValue()*params[OUTMIX_LPG_PARAM].getValue();
 			outmix = clamp(outmix,0.0f,1.0f);
-			currentOutmix[i] = outmix;
+			currentOutmix[i] = outmix; 
+			float out1gain = 1.0f-outmix;
+			float out2gain = outmix;
+			if (m_mix_out_type == 1) 
+			{
+				out1gain = interpolateLinear(m_sqrt_table.data(),(1.0f-outmix)*1023);
+				out2gain = interpolateLinear(m_sqrt_table.data(),outmix*1023);
+			}
+				
+			
 			if (!outputBuffer[i].empty()) {
 				dsp::Frame<2> outputFrame = outputBuffer[i].shift();
 				// Inverting op-amp on outputs
@@ -610,11 +628,13 @@ struct Palette : Module {
 				float out2 = -outputFrame.samples[1] * 5.f;
 				outputs[OUT_OUTPUT].setVoltage(out1,i);
 				outputs[AUX_OUTPUT].setVoltage(out2,i);
-				float out3 = outmix*out2 + (1.0f-outmix)*out1;
+				float out3 = out2gain*out2 + out1gain*out1;
 				outputs[AUX2_OUTPUT].setVoltage(out3,i);
 			}
 		}
 	}
+	int m_mix_out_type = 0; // 0 linear 1 sqrt
+	std::array<float,1025> m_sqrt_table;
 };
 
 
@@ -1186,6 +1206,15 @@ struct PaletteWidget : ModuleWidget {
 		LPGMenuItems* lpg_items = createMenuItem<LPGMenuItems>("LPG mode",RIGHT_ARROW);
 		lpg_items->module = module;
 		menu->addChild(lpg_items);
+
+		auto mixmodeitem = createMenuItem("Output mix constant power",
+		CHECKMARK(module->m_mix_out_type == 1) ,[module]()
+		{
+			if (module->m_mix_out_type == 0)
+				module->m_mix_out_type = 1;
+			else module->m_mix_out_type = 0;
+		});
+		menu->addChild(mixmodeitem);
 
 		RandomizeMenuItems* rmenu = createMenuItem<RandomizeMenuItems>("Parameter randomization",RIGHT_ARROW);
 		rmenu->module = module;
